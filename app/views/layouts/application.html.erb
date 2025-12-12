@@ -9,20 +9,50 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-[#0F0F0F] text-white min-h-screen">
+  <body class="bg-[#0F0F0F] text-white min-h-screen" data-controller="menu">
     <!-- Top Navbar -->
     <header class="bg-[#1A1A1A] px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
-      <%= link_to "F1 Bet", root_path, class: "p-4 rounded-lg text-center" %>
-      <div class="flex gap-4">
+      <%= link_to "F1 Bet", root_path, class: "text-xl font-bold" %>
+
+      <!-- Desktop menu -->
+      <nav class="hidden md:flex gap-4 items-center">
+        <%= link_to "Races", races_path, class: "hover:text-f1-yellow" %>
+        <%= link_to "Drivers", drivers_path, class: "hover:text-f1-yellow" %>
+        <%= link_to "Bets", bets_path, class: "hover:text-f1-yellow" %>
+        <%= link_to "Results", results_path, class: "hover:text-f1-yellow" %>
+        <%= link_to "Bet Positions", bet_positions_path, class: "hover:text-f1-yellow" %>
+
         <% if user_signed_in? %>
-          <span class="text-gray-400">Olá, <%= current_user.name %></span>
           <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "bg-yellow-600 text-black px-3 py-1 rounded hover:bg-yellow-500" %>
         <% else %>
           <%= link_to "Login", new_user_session_path, class: "bg-f1-green px-3 py-1 rounded hover:bg-green-500" %>
           <%= link_to "Sign Up", new_user_registration_path, class: "bg-f1-yellow text-black px-3 py-1 rounded hover:bg-yellow-500" %>
         <% end %>
-      </div>
+      </nav>
+
+      <!-- Mobile hamburger -->
+      <button data-action="click->menu#toggle" class="md:hidden focus:outline-none">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
     </header>
+
+    <!-- Mobile menu -->
+    <nav data-menu-target="menu" class="hidden bg-[#1A1A1A] px-6 py-4 space-y-2 md:hidden">
+      <%= link_to "Races", races_path, class: "block hover:text-f1-yellow" %>
+      <%= link_to "Drivers", drivers_path, class: "block hover:text-f1-yellow" %>
+      <%= link_to "Bets", bets_path, class: "block hover:text-f1-yellow" %>
+      <%= link_to "Results", results_path, class: "block hover:text-f1-yellow" %>
+      <%= link_to "Bet Positions", bet_positions_path, class: "block hover:text-f1-yellow" %>
+
+      <% if user_signed_in? %>
+        <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "w-full bg-yellow-600 text-black px-3 py-1 rounded hover:bg-yellow-500" %>
+      <% else %>
+        <%= link_to "Login", new_user_session_path, class: "block bg-f1-green px-3 py-1 rounded hover:bg-green-500 text-center" %>
+        <%= link_to "Sign Up", new_user_registration_path, class: "block bg-f1-yellow text-black px-3 py-1 rounded hover:bg-yellow-500 text-center" %>
+      <% end %>
+    </nav>
 
     <main class="container mx-auto px-5 py-8">
       <%= yield %>

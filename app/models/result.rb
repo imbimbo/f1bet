@@ -1,39 +1,28 @@
+# app/models/result.rb
 class Result < ApplicationRecord
   belongs_to :race
   belongs_to :driver
 
-  after_save :update_championship_results
-  after_save :update_related_bets
+  after_create :update_championship_results
 
   private
 
   def update_championship_results
+    # Calculate total points per user for the race year
     year = race.date.year
 
-    # Sum points per user for all bets in this year
-    users_points = User.joins(:bets)
-                       .where(bets: { race_id: Race.where("extract(year from date) = ?", year).select(:id) })
-                       .select("users.id, SUM(bets.points) AS total_points")
-                       .group("users.id")
+    # SQLite-compatible: use strftime
+    users_with_points = User.joins(:bets)
+      .where(bets: { race_id: Race.where("strftime('%Y', date) = ?", year.to_s).select(:id) })
+      .group('users.id')
+      .sum('bets.points')
 
-    users_points.each_with_index do |user_point, index|
-      cr = ChampionshipResult.find_or_initialize_by(user_id: user_point.id, year: year)
-      cr.points = user_point.total_points
-      cr.rank = nil # Optional: calculate after sorting below
-      cr.save!
-    end
-
-    # Assign ranks
-    ChampionshipResult.where(year: year)
-                      .order(points: :desc)
-                      .each_with_index do |cr, idx|
-      cr.update_column(:rank, idx + 1)
-    end
-  end
-
-  def update_related_bets
-    race.bets.includes(:bet_positions).each do |bet|
-      bet.calculate_points!
+    # Update championship results
+    users_with_points.each_with_index do |(user_id, points), index|
+      champ = ChampionshipResult.find_or_initialize_by(user_id: user_id, year: year)
+      champ.points = points
+      champ.rank = nil # Optional: calculate ranks later
+      champ.save!
     end
   end
 end

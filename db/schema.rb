@@ -57,6 +57,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_12_180631) do
     t.integer "round_number"
     t.integer "year"
     t.string "location"
+    t.string "api_session_id"
     t.string "race_type"
     t.string "status", default: "upcoming"
   end

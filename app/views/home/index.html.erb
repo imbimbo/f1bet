@@ -1,0 +1,66 @@
+<div class="p-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex gap-2 mb-3">
+      <div class="h-1 w-8 bg-f1-yellow"></div>
+      <div class="h-1 w-8 bg-f1-green"></div>
+    </div>
+    <h2 class="text-4xl font-bold mb-2">F1 Predictor</h2>
+    <p class="text-gray-400">Apostas • Temporada <%= Date.today.year %></p>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-4 mb-8">
+    <div class="bg-[#1A1A1A] rounded-lg p-4 text-center">
+      <div class="text-2xl font-bold mb-1"><%= @total_points %></div>
+      <div class="text-sm text-gray-500">Pontos</div>
+    </div>
+    <div class="bg-[#1A1A1A] rounded-lg p-4 text-center">
+      <div class="text-2xl font-bold mb-1"><%= @position %></div>
+      <div class="text-sm text-gray-500">Posição</div>
+    </div>
+    <div class="bg-[#1A1A1A] rounded-lg p-4 text-center">
+      <div class="text-2xl font-bold mb-1"><%= @bets_count %></div>
+      <div class="text-sm text-gray-500">Apostas</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="flex gap-3 mb-8">
+    <%= link_to root_path, class: "flex-1 bg-[#1A1A1A] hover:bg-[#222] p-4 rounded-lg text-center transition" do %>
+      Ranking
+    <% end %>
+    <%= link_to root_path, class: "flex-1 bg-[#1A1A1A] hover:bg-[#222] p-4 rounded-lg text-center transition" do %>
+      Minhas Apostas
+    <% end %>
+  </div>
+
+  <!-- Upcoming Races -->
+  <h3 class="text-2xl font-semibold mb-4">Próximas Corridas</h3>
+  <div class="space-y-3">
+    <% @upcoming_races.each do |race| %>
+      <%= link_to race_path(race), class: "block bg-[#1A1A1A] hover:bg-[#222] p-5 rounded-lg transition" do %>
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <h4 class="text-xl font-semibold mb-1"><%= race.name %></h4>
+            <p class="text-sm text-gray-400"><%= race.location %></p>
+          </div>
+          <div class="text-right text-sm text-gray-400">
+            <%= race.start_time.strftime("%d %b") %>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <% ["qualifying", "sprint", "race"].each do |session| %>
+            <% session_color = case session
+              when "qualifying" then "bg-[#2A2A2A]"
+              when "sprint" then "bg-f1-yellow text-black font-medium"
+              when "race" then "bg-f1-green font-medium"
+            end %>
+            <span class="px-3 py-1 <%= session_color %> rounded text-xs"><%= session.capitalize %></span>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

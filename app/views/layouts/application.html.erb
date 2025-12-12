@@ -1,18 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
     <title>F1bet</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-[#0F0F0F] text-white min-h-screen">
+    <!-- Top Navbar -->
+    <header class="bg-[#1A1A1A] px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
+      <h1 class="text-xl font-bold">F1 Predictor</h1>
+      <div class="flex gap-4">
+        <% if user_signed_in? %>
+          <span class="text-gray-400">Olá, <%= current_user.name %></span>
+          <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "bg-f1-yellow text-black px-3 py-1 rounded hover:bg-yellow-500" %>
+        <% else %>
+          <%= link_to "Login", new_user_session_path, class: "bg-f1-green px-3 py-1 rounded hover:bg-green-500" %>
+          <%= link_to "Sign Up", new_user_registration_path, class: "bg-f1-yellow text-black px-3 py-1 rounded hover:bg-yellow-500" %>
+        <% end %>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-5 py-8">
       <%= yield %>
     </main>
   </body>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_11_151142) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_12_180631) do
   create_table "bet_positions", force: :cascade do |t|
     t.integer "bet_id", null: false
     t.integer "driver_id", null: false
@@ -51,9 +51,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_151142) do
   create_table "races", force: :cascade do |t|
     t.string "name"
     t.date "date"
-    t.string "race_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "start_time"
+    t.integer "round_number"
+    t.integer "year"
+    t.string "location"
+    t.string "race_type"
+    t.string "status", default: "upcoming"
   end
 
   create_table "results", force: :cascade do |t|
@@ -72,6 +77,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_151142) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "bet_positions", "bets"

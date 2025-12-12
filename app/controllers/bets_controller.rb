@@ -1,9 +1,10 @@
 class BetsController < ApplicationController
   before_action :set_bet, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!
 
   # GET /bets or /bets.json
   def index
-    @bets = Bet.all
+    @bets = current_user.bets.includes(:race, :bet_positions)
   end
 
   # GET /bets/1 or /bets/1.json
@@ -55,6 +56,10 @@ class BetsController < ApplicationController
       format.html { redirect_to bets_path, notice: "Bet was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
+  end
+
+  def my_bets
+    @bets = current_user.bets.includes(:race, :bet_positions)
   end
 
   private

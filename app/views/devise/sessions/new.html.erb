@@ -1,26 +1,36 @@
-<h2>Log in</h2>
+<div class="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
+  <div class="w-full max-w-2xl bg-[#1A1A1A] rounded-lg p-4 sm:p-6 md:p-8 border border-gray-700/30 shadow-2xl shadow-orange-500/5">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 text-white text-center p-4 sm:p-6 md:p-8">Cockpit Access</h1>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="mb-4 sm:mb-5 flex flex-col items-center">
+        <%= f.label :email, class: "block text-lg sm:text-xl md:text-2xl font-medium text-gray-300 mb-2 w-full max-w-full sm:max-w-md" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email",
+            class: "w-full max-w-full sm:max-w-md px-4 py-2 bg-[#0F0F0F] border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent mb-4 sm:mb-6" %>
+      </div>
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
+      <div class="mb-4 sm:mb-5 flex flex-col items-center">
+        <%= f.label :password, class: "block text-lg sm:text-xl md:text-2xl font-medium text-gray-300 mb-2 w-full max-w-full sm:max-w-md" %>
+        <%= f.password_field :password, autocomplete: "current-password",
+            class: "w-full max-w-full sm:max-w-md px-4 py-2 bg-[#0F0F0F] border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent mb-4 sm:mb-6" %>
+      </div>
 
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+      <% if devise_mapping.rememberable? %>
+        <div class="mb-4 sm:mb-6 flex items-center justify-center">
+          <%= f.check_box :remember_me, class: "w-4 h-4 text-orange-500 bg-[#0F0F0F] border-gray-700 rounded focus:ring-orange-500 focus:ring-2" %>
+          <%= f.label :remember_me, class: "ml-2 text-lg sm:text-xl md:text-2xl text-gray-300" %>
+        </div>
+      <% end %>
+
+      <div class="mb-4 sm:mb-6 flex justify-center">
+        <button type="submit" class="w-full sm:w-auto text-lg sm:text-xl md:text-2xl bg-gradient-to-b from-orange-400 via-orange-500 to-orange-600 hover:from-orange-500 hover:via-orange-600 hover:to-orange-700 text-black font-bold py-3 px-6 sm:px-8 rounded-md transition-all duration-200 cursor-pointer shadow-lg shadow-orange-500/30 border border-orange-600/20">
+          Log in
+        </button>
+      </div>
+    <% end %>
+
+    <div class="space-y-2 text-center mb-6">
+      <%= render "devise/shared/links" %>
     </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
   </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

@@ -21,6 +21,7 @@
           <%= link_to "Drivers", drivers_path, class: "text-2xl hover:text-f1-yellow transition" %>
           <%= link_to "Bets", bets_path, class: "text-2xl hover:text-f1-yellow transition" %>
           <%= link_to "Results", results_path, class: "text-2xl hover:text-f1-yellow transition" %>
+          <%= link_to "Bet Positions", bet_positions_path, class: "block text-2xl hover:text-f1-yellow transition" %>
 
 
           <% if user_signed_in? %>
@@ -50,7 +51,7 @@
         <%= link_to "Bet Positions", bet_positions_path, class: "block text-lg hover:text-f1-yellow transition" %>
 
         <% if user_signed_in? %>
-          <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "w-full bg-yellow-600 text-black px-3 py-1 rounded hover:bg-yellow-500 text-lg" %>
+          <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "w-full bg-yellow-600 text-black px-3 py-1 rounded hover:bg-yellow-500 text-2xl" %>
         <% else %>
           <%= link_to "Login", new_user_session_path, class: "block bg-f1-green px-3 py-1 rounded hover:bg-green-500 text-center text-lg" %>
           <%= link_to "Sign Up", new_user_registration_path, class: "block bg-f1-yellow text-black px-3 py-1 rounded hover:bg-yellow-500 text-center text-lg" %>

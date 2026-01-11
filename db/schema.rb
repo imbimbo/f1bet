@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_13_200859) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_11_113859) do
   create_table "bet_positions", force: :cascade do |t|
     t.integer "bet_id", null: false
     t.integer "driver_id", null: false
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["bet_id", "driver_id"], name: "index_bet_positions_on_bet_id_and_driver_id", unique: true
+    t.index ["bet_id", "position"], name: "index_bet_positions_on_bet_id_and_position", unique: true
     t.index ["bet_id"], name: "index_bet_positions_on_bet_id"
     t.index ["driver_id"], name: "index_bet_positions_on_driver_id"
   end
@@ -28,6 +30,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_13_200859) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["race_id"], name: "index_bets_on_race_id"
+    t.index ["user_id", "race_id"], name: "index_bets_on_user_id_and_race_id", unique: true
     t.index ["user_id"], name: "index_bets_on_user_id"
   end
 

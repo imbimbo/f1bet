@@ -1,4 +1,5 @@
 class BetPosition < ApplicationRecord
   belongs_to :bet
-  belongs_to :driver
+  belongs_to :drive
+
 end

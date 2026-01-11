@@ -16,6 +16,7 @@
         <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
           <%= render race %>
           <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
+          <%= link_to "Bet now", new_bet_path(race_id: race.id) %>
             <%= link_to "Show", race, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
             <%= link_to "Edit", edit_race_path(race), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
             <%= button_to "Destroy", race, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>

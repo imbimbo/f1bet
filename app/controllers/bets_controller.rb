@@ -13,7 +13,10 @@ class BetsController < ApplicationController
 
   # GET /bets/new
   def new
-    @bet = Bet.new
+    @bet = current_user.bets.new(race_id: params[:race_id])
+
+    # Build 10 bet_positions if they don't exist
+    10.times { @bet.bet_positions.build } if @bet.bet_positions.empty?
   end
 
   # GET /bets/1/edit
@@ -22,15 +25,13 @@ class BetsController < ApplicationController
 
   # POST /bets or /bets.json
   def create
-    @bet = Bet.new(bet_params)
+    @bet = current_user.bets.new(bet_params)
 
     respond_to do |format|
       if @bet.save
-        format.html { redirect_to @bet, notice: "Bet was successfully created." }
-        format.json { render :show, status: :created, location: @bet }
+        format.html { redirect_to @bet, notice: "Bet created!" }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @bet.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -70,6 +71,9 @@ class BetsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def bet_params
-      params.require(:bet).permit(:user_id, :race_id, :points)
+      params.require(:bet).permit(
+        :race_id,
+        bet_positions_attributes: [:driver_id, :position]
+      )
     end
 end

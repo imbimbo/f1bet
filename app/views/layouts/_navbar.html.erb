@@ -1,0 +1,161 @@
+<% if user_signed_in? %>
+  <!-- The Pit Wall Navbar -->
+  <div data-controller="menu">
+  <header class="bg-[#1a1a1a]/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 shadow-md">
+    <div class="container mx-auto px-5 py-4">
+      <!-- Desktop Layout: Three Sections -->
+      <div class="hidden md:flex md:justify-between md:items-center gap-4">
+        <!-- Left: Brand + Season Selector -->
+      <div class="flex-shrink-0">
+        <%= link_to root_path, class: "group flex items-center gap-x-2" do %>
+          <div class="h-7 w-2 bg-[#FF8700] transform -skew-x-12 rounded-sm group-hover:bg-white transition-all duration-300 ease-out shadow-[0_0_10px_rgba(255,135,0,0.5)] group-hover:shadow-[0_0_15px_rgba(255,255,255,0.8)]"></div>
+
+          <span class="text-2xl font-black italic tracking-tighter leading-none text-white group-hover:text-[#FF8700] transition-colors duration-300">
+            F1<span class="text-[#FF8700] group-hover:text-white transition-colors duration-300">BET</span>
+          </span>
+        <% end %>
+      </div>
+
+        <!-- Center: League Data (Read-only) -->
+        <nav class="flex justify-center gap-6 items-center flex-1">
+          <%= link_to "Calendário", races_path, class: "text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" %>
+          <%= link_to "Pilotos", drivers_path, class: "text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" %>
+          <%= link_to "Classificação", users_path, class: "text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" %>
+          <%= link_to "Resultados", results_path, class: "text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" %>
+          <%= link_to "Regras", "#", class: "text-lg hover:text-f1-yellow transition opacity-50 cursor-not-allowed whitespace-nowrap px-3", title: "Coming soon" %>
+        </nav>
+
+        <!-- Right: Cockpit (Actionable Items) -->
+        <div class="flex items-center justify-end gap-4 flex-shrink-0" data-controller="dropdown">
+          <!-- Chat Icon with Notification Dot -->
+          <button class="relative p-2 hover:bg-[#0F0F0F] rounded transition" title="Paddock Radio">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+
+          <!-- Admin Badge (Race Control) -->
+          <% if admin_user? %>
+            <%= link_to "#", class: "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium transition", title: "Race Control" do %>
+              F1 Bet Controle
+            <% end %>
+          <% end %>
+
+          <!-- User Profile Dropdown -->
+          <div class="relative" data-dropdown-target="container">
+            <button data-action="click->dropdown#toggle" class="flex items-center gap-2 hover:bg-[#0F0F0F] px-3 py-2 rounded transition">
+              <div class="text-right">
+                <div class="text-sm font-medium"><%= current_user.name %></div>
+                <div class="text-xs text-gray-400">R$ <%= number_with_precision(user_financial_balance, precision: 2, delimiter: '.', separator: ',') %></div>
+              </div>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-48 bg-[#0F0F0F] border border-gray-700 rounded-lg shadow-lg py-2 z-50">
+              <%= link_to bets_path, class: "block px-4 py-2 hover:bg-[#1A1A1A] transition" do %>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                  </svg>
+                  Minhas Apostas
+                </div>
+              <% end %>
+              <%= link_to bet_positions_path, class: "block px-4 py-2 hover:bg-[#1A1A1A] transition" do %>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  </svg>
+                  Posições de Aposta
+                </div>
+              <% end %>
+              <% if admin_user? %>
+                <div class="border-t border-gray-700 my-2"></div>
+                <%= link_to "#", class: "block px-4 py-2 hover:bg-[#1A1A1A] transition text-red-400" do %>
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Ferramentas de Controle
+                  </div>
+                <% end %>
+              <% end %>
+              <div class="border-t border-gray-700 my-2"></div>
+              <%= button_to destroy_user_session_path, method: :delete, class: "w-full text-left px-4 py-2 hover:bg-[#1A1A1A] transition text-gray-400" do %>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                  </svg>
+
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Layout -->
+      <div class="md:hidden flex justify-between items-center">
+         <%= link_to root_path, class: "group flex items-center gap-x-2" do %>
+          <div class="h-7 w-2 bg-[#FF8700] transform -skew-x-12 rounded-sm group-hover:bg-white transition-all duration-300 ease-out shadow-[0_0_10px_rgba(255,135,0,0.5)] group-hover:shadow-[0_0_15px_rgba(255,255,255,0.8)]"></div>
+
+          <span class="text-2xl font-black italic tracking-tighter leading-none text-white group-hover:text-[#FF8700] transition-colors duration-300">
+            F1<span class="text-[#FF8700] group-hover:text-white transition-colors duration-300">BET</span>
+          </span>
+        <% end %>
+        <button data-action="click->menu#toggle" class="focus:outline-none">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <nav data-menu-target="menu" class="hidden bg-[#1a1a1a]/90 backdrop-blur-md py-4 space-y-2 md:hidden border-b border-white/10">
+    <div class="container mx-auto px-5 space-y-3">
+
+      <!-- League Data -->
+      <div class="pb-2 border-b border-gray-800">
+        <h3 class="text-sm text-gray-400 mb-2">Dados da Liga</h3>
+        <%= link_to "Calendário", races_path, class: "block text-lg hover:text-f1-yellow transition py-1" %>
+        <%= link_to "Pilotos", drivers_path, class: "block text-lg hover:text-f1-yellow transition py-1" %>
+        <%= link_to "Classificação", users_path, class: "block text-lg hover:text-f1-yellow transition py-1" %>
+        <%= link_to "Resultados", results_path, class: "block text-lg hover:text-f1-yellow transition py-1" %>
+        <%= link_to "Regras", "#", class: "block text-lg hover:text-f1-yellow transition py-1 opacity-50" %>
+      </div>
+
+      <!-- User Info -->
+      <div class="pb-2 border-b border-gray-800">
+        <div class="text-sm font-medium mb-1"><%= current_user.name %></div>
+        <div class="text-xs text-gray-400">R$ <%= number_with_precision(user_financial_balance, precision: 2, delimiter: '.', separator: ',') %></div>
+      </div>
+
+      <!-- Cockpit Actions -->
+      <div>
+        <h3 class="text-sm text-gray-400 mb-2">Cockpit</h3>
+        <%= link_to bets_path, class: "block text-lg hover:text-f1-yellow transition py-1" do %>
+          Minhas Apostas
+        <% end %>
+        <%= link_to bet_positions_path, class: "block text-lg hover:text-f1-yellow transition py-1" do %>
+          Posições de Aposta
+        <% end %>
+        <button class="w-full text-left text-lg hover:text-f1-yellow transition py-1">
+          Chat Paddock Radio
+        </button>
+        <% if admin_user? %>
+          <%= link_to "#", class: "block text-lg text-red-400 hover:text-red-300 transition py-1" do %>
+            Controle F1 Bet
+          <% end %>
+        <% end %>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "w-full text-left text-lg text-gray-400 hover:text-gray-300 transition py-1 mt-2" %>
+      </div>
+    </div>
+  </nav>
+  </div>
+<% end %>

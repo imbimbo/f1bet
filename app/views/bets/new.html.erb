@@ -2,6 +2,10 @@
 
 <div class="md:w-2/3 w-full">
   <h1 class="font-bold text-4xl">New bet</h1>
+  <div class="my-5">
+    <strong>Race:</strong>
+    <%= @bet.race.present? ? "#{@bet.race.name} (#{@bet.race.race_type.capitalize})" : "Not selected" %>
+  </div>
 
   <%= render "form", bet: @bet %>
 

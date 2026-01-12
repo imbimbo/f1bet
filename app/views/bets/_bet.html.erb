@@ -1,14 +1,28 @@
 <div id="<%= dom_id bet %>" class="w-full sm:w-auto my-5 space-y-5">
   <div>
-    <strong class="block font-medium mb-1">User:</strong>
-    <%= bet.user_id %>
-  </div>
-  <div>
     <strong class="block font-medium mb-1">Race:</strong>
-    <%= bet.race_id %>
+    <%= bet.race.name %> (<%= bet.race.race_type.capitalize %>)
   </div>
   <div>
     <strong class="block font-medium mb-1">Points:</strong>
-    <%= bet.points %>
+    <%= bet.points || 0 %>
   </div>
+
+  <h3 class="font-semibold text-lg mt-3">Bet Positions</h3>
+  <table class="table-auto border-collapse border border-gray-300 w-full mt-2">
+    <thead>
+      <tr>
+        <th class="border px-2 py-1">Position</th>
+        <th class="border px-2 py-1">Driver</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% bet.bet_positions.order(:position).each do |bp| %>
+        <tr>
+          <td class="border px-2 py-1"><%= bp.position %></td>
+          <td class="border px-2 py-1"><%= bp.driver.name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>

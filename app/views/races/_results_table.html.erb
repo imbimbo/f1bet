@@ -1,0 +1,27 @@
+<table class="w-full text-sm text-gray-200">
+  <thead>
+    <tr class="border-b border-gray-800">
+      <th class="py-2 text-left w-16">Pos</th>
+      <th class="py-2 text-left">Piloto</th>
+      <th class="py-2 text-left">Equipe</th>
+      <th class="py-2 text-right w-16">Pts</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% race.results.each do |result| %>
+      <tr class="border-b border-gray-900 hover:bg-gray-900">
+        <td class="py-2"><%= result.position %></td>
+        <td class="py-2 font-medium text-white">
+          <%= result.driver.name %>
+        </td>
+        <td class="py-2 text-gray-400">
+          <%= result.driver.team %>
+        </td>
+        <td class="py-2 text-right">
+          <%= result.points %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_11_113859) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_13_204203) do
   create_table "bet_positions", force: :cascade do |t|
     t.integer "bet_id", null: false
     t.integer "driver_id", null: false
@@ -89,6 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_11_113859) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.boolean "admin", default: false, null: false
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

@@ -24,6 +24,9 @@
 
         <p class="text-gray-400 font-medium text-lg border-l-2 border-gray-700 pl-3 ml-1 mb-6">
           <%= next_race&.location %>
+          <% if next_race&.date.present? %>
+            <span class="text-gray-500"> • <%= format_date_pt_br(next_race.date) %></span>
+          <% end %>
         </p>
 
         <% track_url = next_race&.circuit_image_url || track_image_for(next_race&.location.to_s) %>

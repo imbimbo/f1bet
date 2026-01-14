@@ -15,4 +15,16 @@ module ApplicationHelper
     # Convert points to financial balance (1 point = R$ 1.00, or adjust as needed)
     (championship_result&.points || 0).to_f
   end
+
+  def format_date_pt_br(date)
+    return nil unless date
+    
+    months = {
+      1 => 'janeiro', 2 => 'fevereiro', 3 => 'março', 4 => 'abril',
+      5 => 'maio', 6 => 'junho', 7 => 'julho', 8 => 'agosto',
+      9 => 'setembro', 10 => 'outubro', 11 => 'novembro', 12 => 'dezembro'
+    }
+    
+    "#{date.day} de #{months[date.month]} de #{date.year}"
+  end
 end

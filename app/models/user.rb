@@ -11,4 +11,11 @@ class User < ApplicationRecord
 
   # Validations
   validates :name, presence: true
+
+  scope :admins, -> { where(admin: true) }
+
+  def admin?
+    admin
+  end
+
 end

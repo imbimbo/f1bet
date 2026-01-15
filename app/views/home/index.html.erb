@@ -29,7 +29,7 @@
           <% end %>
         </p>
 
-        <% track_url = next_race&.circuit_image_url || track_image_for(next_race&.location.to_s) %>
+        <% track_url = next_race&.circuit_image_url %>
 
         <% if track_url.present? %>
           <div class="flex justify-center items-center my-4">

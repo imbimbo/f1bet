@@ -3,8 +3,11 @@ class HomeController < ApplicationController
   before_action :authenticate_user!, only: [:index]
 
   def index
-    # Upcoming races
-    @upcoming_races = Race.where("start_time > ?", Time.current).order(:start_time)
+    # Upcoming races - include all future races (including 2026)
+    # Get races with start_time in the future, prioritizing by start_time
+    @upcoming_races = Race.where(status: "upcoming")
+                          .where("start_time > ?", Time.current)
+                          .order(:start_time)
 
     if current_user
       @total_points = current_user.bets.sum(:points) || 0

@@ -1,10 +1,23 @@
-<div id="<%= dom_id driver %>" class="w-full sm:w-auto my-5 space-y-5">
-  <div>
-    <strong class="block font-medium mb-1">Name:</strong>
+<div
+  id="<%= dom_id driver %>"
+  class="bg-zinc-900 border border-zinc-800 rounded-2xl
+         p-6 flex flex-col items-center text-center
+         hover:bg-zinc-800 transition aspect-[3/4]"
+>
+  <!-- Foto -->
+  <img
+    src="https://placehold.co/300x300?text=Driver"
+    alt="<%= driver.name %>"
+    class="h-32 w-32 rounded-full object-cover mb-5"
+  />
+
+  <!-- Nome -->
+  <p class="text-white font-semibold text-lg">
     <%= driver.name %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Team:</strong>
+  </p>
+
+  <!-- Equipe -->
+  <p class="text-sm text-gray-400 mt-1">
     <%= driver.team %>
-  </div>
+  </p>
 </div>

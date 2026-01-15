@@ -2,7 +2,6 @@ class Race < ApplicationRecord
   has_many :bets
   has_many :results, -> { order(:position) }, dependent: :destroy
   has_many :drivers, through: :results
-  belongs_to :drivers
 
   SESSION_TYPES = %w[qualifying race].freeze
   STATUSES = %w[upcoming open closed finished].freeze

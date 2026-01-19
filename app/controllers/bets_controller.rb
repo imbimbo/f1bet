@@ -36,6 +36,26 @@ class BetsController < ApplicationController
     end
   end
 
+  def save_positions
+  bet = current_user.bets.find_or_create_by!(race_id: params[:race_id])
+
+  Bet.transaction do
+    bet.bet_positions.destroy_all
+
+    params[:positions].each do |pos|
+      bet.bet_positions.build(
+        driver_id: pos[:driver_id],
+        position: pos[:position]
+      )
+    end
+
+    bet.save! # valida tudo UMA ÚNICA VEZ
+  end
+
+  head :ok
+end
+
+
   # PATCH/PUT /bets/1 or /bets/1.json
   def update
     respond_to do |format|

@@ -42,7 +42,12 @@
         data-accordion-target="content"
         class="hidden bg-gray-950 px-5 py-4"
       >
-        <%= render "results_table", race: race %>
+        <%= render "results_table", race: race, drivers: race.drivers %>
+
+        <%# <%= render "results_table",
+        race: race,
+        drivers: @drivers_by_race[race.id] %>
+        
       </div>
     </div>
   <% end %>

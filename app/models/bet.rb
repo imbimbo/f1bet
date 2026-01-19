@@ -6,7 +6,7 @@ class Bet < ApplicationRecord
   accepts_nested_attributes_for :bet_positions
 
   validate :not_locked, on: [:create, :update]
-  validate :exactly_ten_positions
+  # validate :exactly_ten_positions
 
   # Calculate and save points for this bet
   def calculate_points!
@@ -35,7 +35,7 @@ class Bet < ApplicationRecord
     errors.add(:base, "Bet is locked") if locked?
   end
 
-  def exactly_ten_positions
-    errors.add(:base, "Must select exactly 10 drivers") unless bet_positions.size == 10
-  end
+  # def exactly_ten_positions
+  #   errors.add(:base, "Must select exactly 10 drivers") unless bet_positions.size == 10
+  # end
 end

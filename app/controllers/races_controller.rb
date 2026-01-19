@@ -4,7 +4,38 @@ class RacesController < ApplicationController
   # GET /races or /races.json
   def index
     @races = Race.all
+    @drivers = Driver.all
   end
+
+   # def index
+  #   @races = Race.includes(:drivers)
+
+  #   @drivers_by_race = {}
+
+  #   @races.each do |race|
+  #     @drivers_by_race[race.id] = race.drivers.to_a
+  #   end
+  # end
+
+  # def index
+  #   @races = Race.includes(:drivers)
+
+  #   @drivers_by_race = @races.each_with_object({}) do |race, hash|
+  #     drivers = race.drivers.to_a
+
+  #     bet = current_user.bets.find_by(race: race)
+
+  #     if bet.present?
+  #       positions = bet.bet_positions.index_by(&:driver_id)
+
+  #       drivers = drivers.sort_by do |driver|
+  #         positions[driver.id]&.position || 999
+  #       end
+  #     end
+
+  #     hash[race.id] = drivers
+  #   end
+  # end
 
   # GET /races/1 or /races/1.json
   def show

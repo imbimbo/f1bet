@@ -12,7 +12,7 @@
     </thead>
 
     <tbody>
-      <% @drivers.each_with_index do |driver, index| %>
+      <% drivers.each_with_index do |driver, index| %>
         <tr
           data-sortable-target="row"
           data-driver-id="<%= driver.id %>"
@@ -36,9 +36,6 @@
             <span data-sortable-target="position">
               <%= index + 1 %>
             </span>
-
-            <!-- ícone de drag -->
-            <span class="text-gray-500 cursor-move">⠿</span>
           </td>
         </tr>
       <% end %>

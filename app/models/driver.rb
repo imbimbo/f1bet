@@ -1,5 +1,7 @@
 class Driver < ApplicationRecord
-  has_many :bet_positions
+  has_many :race_drivers, dependent: :destroy
+  has_many :races, through: :race_drivers
+
   has_many :results
-  has_many :races, through: :results
+  has_many :bet_positions
 end

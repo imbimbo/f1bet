@@ -167,3 +167,17 @@ end
 
 puts "✅ Race Calibration Complete: #{Race.count} races loaded."
 puts "---------"
+
+puts "🏎️ Linking drivers to races..."
+
+Race.find_each do |race|
+  Driver.find_each do |driver|
+    RaceDriver.find_or_create_by!(
+      race: race,
+      driver: driver
+    )
+  end
+end
+
+puts "✅ Drivers linked to races via race_drivers."
+

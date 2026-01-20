@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_19_195810) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_20_135628) do
   create_table "bet_positions", force: :cascade do |t|
     t.integer "bet_id", null: false
     t.integer "driver_id", null: false
@@ -52,6 +52,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_19_195810) do
     t.integer "api_id"
     t.string "headshot_url"
     t.index ["api_id"], name: "index_drivers_on_api_id"
+  end
+
+  create_table "race_drivers", force: :cascade do |t|
+    t.integer "race_id", null: false
+    t.integer "driver_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["driver_id"], name: "index_race_drivers_on_driver_id"
+    t.index ["race_id"], name: "index_race_drivers_on_race_id"
   end
 
   create_table "races", force: :cascade do |t|
@@ -101,6 +110,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_19_195810) do
   add_foreign_key "bets", "races"
   add_foreign_key "bets", "users"
   add_foreign_key "championship_results", "users"
+  add_foreign_key "race_drivers", "drivers"
+  add_foreign_key "race_drivers", "races"
   add_foreign_key "results", "drivers"
   add_foreign_key "results", "races"
 end

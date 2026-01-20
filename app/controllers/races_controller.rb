@@ -3,7 +3,9 @@ class RacesController < ApplicationController
 
   # GET /races or /races.json
   def index
-    @races = Race.includes(bets: { bet_positions: :driver })
+    @races = Race
+              .ordered_for_calendar
+              .includes(bets: { bet_positions: :driver })
 
     @drivers_by_race = {}
 

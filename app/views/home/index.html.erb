@@ -14,7 +14,7 @@
 
         <div class="flex items-center gap-4 mb-2 px-8">
           <h2 class="text-4xl md:text-5xl font-black italic text-white leading-none uppercase tracking-tighter mt-8">
-            <%= next_race&.name || "Season Over" %>
+            <%= next_race_display_name(next_race) || "Season Over" %>
           </h2>
 
           <% if next_race&.country_flag_url.present? %>

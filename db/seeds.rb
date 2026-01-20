@@ -22,6 +22,72 @@ ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='r
 puts "✅ Database Cleaned. Starting Seed..."
 puts "---------"
 
+puts "👨‍🚀 Starting Driver Import..."
+
+drivers = []
+
+begin
+  if defined?(F1ApiService)
+    service = F1ApiService.new
+    drivers = service.get_drivers || []
+    puts "📡 Fetched #{drivers.length} drivers from API"
+  end
+rescue => e
+  puts "⚠️ Could not fetch drivers from API: #{e.message}"
+  drivers = []
+end
+
+if drivers.any?
+  puts "✅ API Data Found! Creating drivers..."
+
+  drivers.each do |data|
+    Driver.find_or_create_by!(api_id: data[:driver_number]) do |d|
+      d.name         = data[:full_name]
+      d.team         = data[:team_name]
+      d.headshot_url = data[:headshot_url]
+      # d.photo        = data[:headshot_url] # se ainda estiver usando `photo`
+    end
+    puts "  🏁 #{data[:full_name]} (#{data[:team_name]})"
+  end
+else
+  puts "⚠️ API returned empty for drivers. Deploying Safety Car..."
+
+  fallback_drivers = [
+    {
+      api_id: 1,
+      name: "Max Verstappen",
+      team: "Red Bull Racing",
+      img: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Max_Verstappen_2017_Malaysia_3.jpg"
+    },
+    {
+      api_id: 16,
+      name: "Charles Leclerc",
+      team: "Ferrari",
+      img: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Charles_Leclerc_2019.jpg"
+    },
+    {
+      api_id: 44,
+      name: "Lewis Hamilton",
+      team: "Ferrari",
+      img: "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2022.jpg"
+    }
+  ]
+
+  fallback_drivers.each do |driver|
+    Driver.create!(
+      api_id: driver[:api_id],
+      name: driver[:name],
+      team: driver[:team],
+      headshot_url: driver[:img],
+      photo: driver[:img]
+    )
+  end
+end
+
+
+puts "✅ Driver Grid Ready: #{Driver.count} drivers loaded."
+puts "---------"
+
 # 3. Process the Data
 # Initialize meetings variable (empty by default, will use fallback)
 meetings = []
@@ -101,3 +167,17 @@ end
 
 puts "✅ Race Calibration Complete: #{Race.count} races loaded."
 puts "---------"
+
+puts "🏎️ Linking drivers to races..."
+
+Race.find_each do |race|
+  Driver.find_each do |driver|
+    RaceDriver.find_or_create_by!(
+      race: race,
+      driver: driver
+    )
+  end
+end
+
+puts "✅ Drivers linked to races via race_drivers."
+

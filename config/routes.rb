@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   resources :results
   resources :bet_positions
   resources :bets
-  resources :races
+  resources :races do
+    post "bets/save_positions", to: "bets#save_positions"
+  end
   resources :drivers
   resources :users, only: [:show, :index] # usually avoid full CRUD for users
 

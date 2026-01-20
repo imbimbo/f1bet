@@ -3,8 +3,27 @@ class RacesController < ApplicationController
 
   # GET /races or /races.json
   def index
-    @races = Race.all
+    @races = Race.includes(bets: { bet_positions: :driver })
+
+    @drivers_by_race = {}
+
+    @races.each do |race|
+      bet = current_user.bets.find_by(race: race)
+
+      drivers =
+        if bet&.bet_positions&.any?
+          bet.bet_positions
+            .includes(:driver)
+            .order(:position)
+            .map(&:driver)
+        else
+          Driver.all
+        end
+
+      @drivers_by_race[race.id] = drivers
+    end
   end
+
 
   # GET /races/1 or /races/1.json
   def show

@@ -8,11 +8,7 @@
     <% @drivers.each do |driver| %>
       <div id="<%= dom_id driver %>" class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col items-center text-center hover:bg-zinc-800 transition">
         <!-- Foto -->
-        <img
-          src="https://placehold.co/120x120?text=Driver"
-          alt="<%= driver.name %>"
-          class="h-24 w-24 rounded-full object-cover mb-4"
-        />
+        <img src="<%= driver.headshot_url %>" class="w-10 h-10 rounded-full">
 
         <!-- Nome -->
         <p class="text-base font-semibold text-white truncate">

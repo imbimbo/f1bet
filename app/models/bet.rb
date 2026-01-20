@@ -5,7 +5,7 @@ class Bet < ApplicationRecord
 
   accepts_nested_attributes_for :bet_positions
 
-  validate :not_locked, on: [:create, :update]
+  validate :not_locked, on: :update
   # validate :exactly_ten_positions
 
   # Calculate and save points for this bet

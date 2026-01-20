@@ -24,7 +24,6 @@ class RacesController < ApplicationController
     end
   end
 
-
   # GET /races/1 or /races/1.json
   def show
   end

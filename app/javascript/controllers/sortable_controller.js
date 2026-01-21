@@ -45,7 +45,7 @@ export default class extends Controller {
   save() {
 
     console.log("rows:", this.rowTargets);
-    
+
   const positions = this.rowTargets.map((row, index) => ({
     driver_id: row.dataset.driverId,
     position: index + 1
@@ -63,9 +63,9 @@ export default class extends Controller {
       if (!response.ok) throw new Error("Erro ao salvar aposta")
       return response.text()
     })
-    .then(() => {
-      alert("Aposta salva com sucesso ✅")
-    })
+    // .then(() => {
+    //   alert("Aposta salva com sucesso ✅")
+    // })
     .catch(error => {
       alert("Erro ao salvar a aposta ❌")
       console.error(error)
@@ -73,14 +73,14 @@ export default class extends Controller {
   }
 
   confirm() {
-  const confirmed = window.confirm(
-    "Tem certeza que essa é a ordem correta dos pilotos para sua aposta?"
-  )
+    const confirmed = window.confirm(
+      "Confirmar a sua aposta ?"
+    )
 
-  if (confirmed) {
-    this.save()
+    if (confirmed) {
+      this.save()
+    }
   }
-}
 
 
 }

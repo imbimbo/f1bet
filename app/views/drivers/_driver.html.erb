@@ -1,15 +1,11 @@
 <div
   id="<%= dom_id driver %>"
   class="bg-zinc-900 border border-zinc-800 rounded-2xl
-         p-6 flex flex-col items-center text-center
-         hover:bg-zinc-800 transition aspect-[3/4]"
+        p-6 flex flex-col items-center text-center
+        hover:bg-zinc-800 transition aspect-[3/4]"
 >
   <!-- Foto -->
-  <img
-    src="https://placehold.co/300x300?text=Driver"
-    alt="<%= driver.name %>"
-    class="h-32 w-32 rounded-full object-cover mb-5"
-  />
+  <img src="<%= driver.headshot_url %>" class="w-10 h-10 rounded-full">
 
   <!-- Nome -->
   <p class="text-white font-semibold text-lg">

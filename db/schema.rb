@@ -60,6 +60,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_135628) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["driver_id"], name: "index_race_drivers_on_driver_id"
+    t.index ["race_id", "driver_id"], name: "index_race_drivers_on_race_id_and_driver_id", unique: true
     t.index ["race_id"], name: "index_race_drivers_on_race_id"
   end
 

@@ -1,25 +1,9 @@
-
 <% content_for :title, "Drivers" %>
 
 <div class="w-full px-6">
   <h1 class="text-3xl font-bold mb-8 text-white">Pilotos</h1>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <% @drivers.each do |driver| %>
-      <div id="<%= dom_id driver %>" class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col items-center text-center hover:bg-zinc-800 transition">
-        <!-- Foto -->
-        <img src="<%= driver.headshot_url %>" class="w-10 h-10 rounded-full">
-
-        <!-- Nome -->
-        <p class="text-base font-semibold text-white truncate">
-          <%= driver.name %>
-        </p>
-
-        <!-- Equipe -->
-        <p class="text-sm text-gray-400 truncate">
-          <%= driver.team %>
-        </p>
-      </div>
-    <% end %>
+    <%= render @drivers %>
   </div>
 </div>

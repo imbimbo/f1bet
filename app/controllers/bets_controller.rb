@@ -36,43 +36,6 @@ class BetsController < ApplicationController
     end
   end
 
-  def save_positions
-    race = Race.find(params[:race_id])
-    bet  = current_user.bets.find_or_create_by!(race: race)
-
-    if bet.locked?
-      render json: { error: "Bet locked" }, status: :forbidden
-      return
-    end
-
-    BetPosition.transaction do
-      bet.bet_positions.destroy_all
-
-      params[:positions]
-        .sort_by { |p| p[:position].to_i }
-        .first(10)
-        .each do |pos|
-          bet.bet_positions.create!(
-            driver_id: pos[:driver_id],
-            position: pos[:position]
-          )
-        end
-    end
-      render json: {
-          bet_id: bet.id,
-          race_id: race.id,
-          positions: bet.bet_positions
-            .order(:position)
-            .map { |bp|
-              {
-                driver_id: bp.driver_id,
-                position: bp.position
-              }
-            }
-        }
-      # head :ok
-  end
-
 
   # PATCH/PUT /bets/1 or /bets/1.json
   def update

@@ -5,7 +5,7 @@ class Bet < ApplicationRecord
 
   accepts_nested_attributes_for :bet_positions
 
-  validate :not_locked, on: :update
+  validate :not_locked
   # validate :exactly_ten_positions
 
   # Calculate and save points for this bet
@@ -28,6 +28,8 @@ class Bet < ApplicationRecord
   end
 
   def locked?
+    return false unless race
+
     Time.current >= race.start_time - 5.minutes
   end
 

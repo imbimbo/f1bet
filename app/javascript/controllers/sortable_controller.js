@@ -1,86 +1,49 @@
 import { Controller } from "@hotwired/stimulus"
+import Sortable from "sortablejs" // <--- This works now!
 
 export default class extends Controller {
-  static targets = ["row", "position"]
-  static values = { url: String }
+  static targets = ["list", "positionInput", "positionDisplay"]
 
   connect() {
-    this.rowTargets.forEach(row => {
-      row.addEventListener("dragstart", () => {
-        this.draggedRow = row
-        this.startIndex = this.rowTargets.indexOf(row)
-        row.classList.add("ring-2", "ring-green-500", "bg-gray-800")
-      })
-
-      row.addEventListener("dragend", () => {
-        this.draggedRow = null
-        row.classList.remove("ring-2", "ring-green-500", "bg-gray-800")
-        this.updatePositions()
-      })
-
-      row.addEventListener("dragover", e => e.preventDefault())
-
-      row.addEventListener("dragenter", () => {
-        if (!this.draggedRow || row === this.draggedRow) return
-
-        const targetIndex = this.rowTargets.indexOf(row)
-
-        if (targetIndex > this.startIndex) {
-          row.after(this.draggedRow)
-        } else {
-          row.before(this.draggedRow)
-        }
-
-        this.startIndex = targetIndex
-      })
+    this.sortable = Sortable.create(this.listTarget, {
+      animation: 150,
+      onEnd: this.updateVisuals.bind(this)
     })
   }
 
-  updatePositions() {
-    this.rowTargets.forEach((row, index) => {
-      row.querySelector("[data-sortable-target='position']").innerText = index + 1
+  updateVisuals() {
+    this.positionDisplayTargets.forEach((element, index) => {
+      element.textContent = index + 1
     })
   }
 
-  save() {
-
-    console.log("rows:", this.rowTargets);
-
-  const positions = this.rowTargets.map((row, index) => ({
-    driver_id: row.dataset.driverId,
-    position: index + 1
-  }))
-
-  fetch(this.urlValue, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
-    },
-    body: JSON.stringify({ positions })
-  })
-    .then(response => {
-      if (!response.ok) throw new Error("Erro ao salvar aposta")
-      return response.text()
+  updateForm(event) {
+    // Update position inputs based on current DOM order (after dragging)
+    // Get all rows in the current DOM order
+    const rows = Array.from(this.listTarget.querySelectorAll('tr[data-id]'))
+    
+    rows.forEach((row, index) => {
+      const position = index + 1
+      
+      // Find the position input within this row
+      const positionInput = row.querySelector('[data-sortable-target="positionInput"]')
+      if (positionInput) {
+        positionInput.value = position
+        // Set the value attribute directly to ensure it's in the form data
+        positionInput.setAttribute('value', position)
+      }
+      
+      // Also update the visual display
+      const positionDisplay = row.querySelector('[data-sortable-target="positionDisplay"]')
+      if (positionDisplay) {
+        positionDisplay.textContent = position
+      }
     })
-    // .then(() => {
-    //   alert("Aposta salva com sucesso ✅")
-    // })
-    .catch(error => {
-      alert("Erro ao salvar a aposta ❌")
-      console.error(error)
-    })
-  }
-
-  confirm() {
-    const confirmed = window.confirm(
-      "Confirmar a sua aposta ?"
-    )
-
-    if (confirmed) {
-      this.save()
+    
+    // For click events on submit buttons, ensure form submits after positions are updated
+    if (event && event.type === 'click' && event.target.type === 'submit') {
+      // Don't prevent default - let the form submit normally
+      // The submit event will also trigger this method via the form's submit action
     }
   }
-
-
 }

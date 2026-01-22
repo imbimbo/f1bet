@@ -2,11 +2,13 @@ class Bet < ApplicationRecord
   belongs_to :user
   belongs_to :race
   has_many :bet_positions, dependent: :destroy
+  has_many :drivers, through: :bet_positions
+  accepts_nested_attributes_for :bet_positions, allow_destroy: true, reject_if: proc { |attrs| attrs['driver_id'].blank? || attrs['position'].blank? }
 
-  accepts_nested_attributes_for :bet_positions
 
-  validate :not_locked, on: :update
-  # validate :exactly_ten_positions
+  validates :race_id, uniqueness: { scope: :user_id, message: "You have already placed a bet for this race." }
+  validate :not_locked
+  validate :exactly_ten_positions_when_submitted
 
   # Calculate and save points for this bet
   def calculate_points!
@@ -28,6 +30,8 @@ class Bet < ApplicationRecord
   end
 
   def locked?
+    return false unless race
+
     Time.current >= race.start_time - 5.minutes
   end
 
@@ -35,7 +39,25 @@ class Bet < ApplicationRecord
     errors.add(:base, "Bet is locked") if locked?
   end
 
-  # def exactly_ten_positions
-  #   errors.add(:base, "Must select exactly 10 drivers") unless bet_positions.size == 10
-  # end
+  # Salva o rascunho na ordem correta dos drivers
+  def ordered_drivers
+    # Se a aposta já foi salva e tem posições, retorna os drivers na ordem das posições
+    # Use reload to ensure we get fresh data from the database
+    if persisted?
+      positions = bet_positions.reload.order(:position)
+      if positions.any?
+        positions.includes(:driver).map(&:driver)
+      else
+        Driver.all.order(:name)
+      end
+    else
+      Driver.all.order(:name)
+    end
+  end
+
+  def exactly_ten_positions_when_submitted
+    if submitted? && bet_positions.count != 10
+      errors.add(:base, "Must select exactly 10 drivers for positions 1-10")
+    end
+  end
 end

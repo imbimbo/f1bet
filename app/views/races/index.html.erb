@@ -42,9 +42,14 @@
         data-accordion-target="content"
         class="hidden bg-gray-950 px-5 py-4"
       >
-        <%= render "results_table",
-          race: race,
-          drivers: @drivers_by_race[race.id] %>
+        <% bet ||= @bet || current_user.bets.find_by(race: race) || Bet.new(submitted: false) %>
+        <%# Ensure race is defined (derive from bet if missing) %>
+        <% race ||= bet&.race %>
+        <%= render "bets/grid",
+            race: race,
+              # If bet exists, use its order; otherwise fallback to race drivers
+            drivers: (bet ? bet.ordered_drivers : race.drivers),
+            bet: bet %>
 
       </div>
     </div>

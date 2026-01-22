@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_20_135628) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_22_164230) do
   create_table "bet_positions", force: :cascade do |t|
     t.integer "bet_id", null: false
     t.integer "driver_id", null: false
@@ -29,6 +29,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_135628) do
     t.integer "points"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "submitted", default: false
     t.index ["race_id"], name: "index_bets_on_race_id"
     t.index ["user_id", "race_id"], name: "index_bets_on_user_id_and_race_id", unique: true
     t.index ["user_id"], name: "index_bets_on_user_id"

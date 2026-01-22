@@ -1,0 +1,117 @@
+<%# Derive race from bet if not passed as local variable %>
+<% race ||= bet&.race %>
+<%# Use passed bet or find/create one %>
+<% bet ||= current_user.bets.find_by(race: race) || Bet.new(submitted: false, race: race, user: current_user) %>
+<div id="drivers-grid" class="w-full">
+  <%= form_with model: bet,
+    data: { controller: "sortable", action: "submit->sortable#updateForm" } do |f| %>
+    <%= f.hidden_field :race_id, value: race.id %>
+
+    <table class="w-full text-sm text-gray-200">
+      <thead>
+        <tr class="border-b border-gray-800">
+          <th class="py-2 text-left">Piloto</th>
+          <th class="py-2 text-left">Equipe</th>
+          <th class="py-2 text-right w-20">Posição</th>
+        </tr>
+      </thead>
+
+    <%
+      # Use the drivers passed from controller if available (preserves saved order),
+      # otherwise fall back to bet's ordered_drivers or default drivers list
+      display_drivers = if drivers.is_a?(Array) && drivers.any?
+                          drivers
+                        elsif bet.persisted? && bet.bet_positions.any?
+                          bet.ordered_drivers
+                        else
+                          Driver.all.order(:name)
+                        end
+    %>
+
+    <tbody data-sortable-target="list">
+
+      <% display_drivers.each_with_index do |driver, index| %>
+
+      <% existing_position = bet.bet_positions.find { |bp| bp.driver_id == driver.id } if bet.persisted? %>
+
+        <tr data-id="<%= driver.id %>"
+          class="border-b border-gray-900 hover:bg-gray-900 cursor-move"
+          draggable="true">
+
+        <%# --- START HIDDEN FIELDS --- %>
+          <% if existing_position %>
+            <%= hidden_field_tag "bet[bet_positions_attributes][][id]", existing_position.id %>
+          <% end %>
+
+          <%= hidden_field_tag "bet[bet_positions_attributes][][driver_id]", driver.id %>
+
+          <%# Ensure the value matches the current visual index %>
+          <%= hidden_field_tag "bet[bet_positions_attributes][][position]", index + 1,
+                id: nil,
+                data: { sortable_target: "positionInput" } %>
+
+          <%# --- END HIDDEN FIELDS --- %>
+
+          <td class="py-2 font-medium text-gray-200">
+            <div class="flex items-center gap-3">
+              <img src="<%= driver.headshot_url %>" class="w-9 h-9 rounded-full">
+              <%= driver.name %>
+            </div>
+          </td>
+
+          <td class="py-2 text-gray-400">
+            <%= driver.team %>
+          </td>
+
+          <td class="py-2 text-right text-gray-400 flex items-center justify-end gap-2">
+            <span data-sortable-target="positionDisplay">
+              <%= index + 1 %>
+            </span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    </table>
+
+    <div class="mt-8 flex justify-end gap-4 items-center">
+      <% if bet.submitted? %>
+        <div class="bg-green-900/50 text-green-200 px-4 py-2 rounded border border-green-700">
+          ✅ Aposta Confirmada
+        </div>
+
+      <% else %>
+        <% show_success = local_assigns[:show_success] || false %>
+        <div id="save-success-message" class="<%= show_success ? '' : 'hidden' %> bg-green-900/50 text-green-200 px-4 py-2 rounded border border-green-700 transition-opacity duration-500">
+          ✓ Salvo com sucesso
+        </div>
+        <% if show_success %>
+          <script>
+            (function() {
+              var msg = document.getElementById('save-success-message');
+              if (msg) {
+                setTimeout(function() {
+                  msg.style.opacity = '0';
+                  setTimeout(function() { 
+                    if (msg) msg.classList.add('hidden'); 
+                  }, 500);
+                }, 3000);
+              }
+            })();
+          </script>
+        <% end %>
+
+        <%= f.submit "Salvar Rascunho",
+            class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded cursor-pointer border border-gray-600",
+            data: { action: "click->sortable#updateForm" } %>
+
+        <%= f.submit "Confirmar Aposta",
+            class: "px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded cursor-pointer",
+            data: {
+                action: "click->sortable#updateForm",
+                confirm: "Tem certeza? Após confirmar, você não poderá alterar sua aposta."
+            } %>
+        <% end %>
+    </div>
+
+      <% end %>
+  </div>

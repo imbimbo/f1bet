@@ -117,32 +117,31 @@ if meetings.any?
     year = start_time.year
 
     Race.create!(
-      name: meeting[:meeting_name] || meeting[:name] || "Grand Prix",
+      name: meeting[:meeting_name] || "Grand Prix",
       location: meeting[:location] || meeting[:circuit_short_name] || "TBA",
       date: date_start,
       start_time: start_time,
       year: year,
-      race_type: "race",  # Must be lowercase per Race model validation
+      race_type: "race",
       status: "upcoming",
-      # Map the API keys to your new database columns
       circuit_image_url: meeting[:circuit_image] || meeting[:img],
       country_flag_url: meeting[:country_flag],
       api_id: meeting[:meeting_key] || meeting[:api_id]
     )
 
-       Race.create!(
-      name: meeting[:meeting_name] || meeting[:name] || "Qualifying",
-      location: meeting[:location] || meeting[:circuit_short_name] || "TBA",
-      date: date_start,
-      start_time: start_time,
-      year: year,
-      race_type: "qualifying",  # Must be lowercase per Race model validation
-      status: "upcoming",
-      # Map the API keys to your new database columns
-      circuit_image_url: meeting[:circuit_image] || meeting[:img],
-      country_flag_url: meeting[:country_flag],
-      api_id: meeting[:meeting_key] || meeting[:api_id]
-    )
+    # Race.create!(
+    #   name: meeting[:meeting_name] || meeting[:name] || "Qualifying",
+    #   location: meeting[:location] || meeting[:circuit_short_name] || "TBA",
+    #   date: date_start,
+    #   start_time: start_time,
+    #   year: year,
+    #   race_type: "qualifying",  # Must be lowercase per Race model validation
+    #   status: "upcoming",
+    #   # Map the API keys to your new database columns
+    #   circuit_image_url: meeting[:circuit_image] || meeting[:img],
+    #   country_flag_url: meeting[:country_flag],
+    #   api_id: meeting[:meeting_key] || meeting[:api_id]
+    # )
   end
 
 else
@@ -172,9 +171,9 @@ else
       date: date,
       start_time: start_time,
       year: year,
-      race_type: "race",  # Must be lowercase per Race model validation
+      race_type: "race",
       status: "upcoming",
-      circuit_image_url: race[:img] # Using the fallback image
+      circuit_image_url: race[:img]
     )
   end
 end

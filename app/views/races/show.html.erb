@@ -1,15 +1,71 @@
-<% content_for :title, "Showing race" %>
+<% content_for :title, race_display_name(@main_race) %>
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+<div class="mb-8">
+  <!-- Nome do GP -->
+  <h1 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
+    <%= race_display_name(@main_race) %>
+  </h1>
+
+  <!-- Local + Data/Hora BR -->
+  <p class="text-gray-400 mt-2 text-lg">
+    <%= @main_race.location %>
+    •
+    <%= l(@main_race.start_time.in_time_zone("America/Sao_Paulo"), format: :long) %>
+    (Horário de Brasília)
+  </p>
+
+  <!-- Imagem do circuito -->
+  <% if @main_race.circuit_image_url.present? %>
+    <div class="mt-6 flex justify-center">
+      <%= image_tag @main_race.circuit_image_url,
+        alt: "Circuit layout",
+        class: "max-h-56 object-contain opacity-90" %>
+    </div>
   <% end %>
+</div>
 
-  <h1 class="font-bold text-4xl">Showing race</h1>
+<div class="space-y-4">
+  <% @sessions.each do |race| %>
+    <div
+      class="rounded-lg border border-gray-800 overflow-hidden"
+      data-controller="accordion"
+        >
+        <!-- Linha da corrida -->
+      <button
+        type="button"
+        data-action="click->accordion#toggle"
+        class="
+          w-full flex justify-between items-center
+          px-5 py-4
+          bg-gray-900 hover:bg-gray-800
+          transition-colors">
+        <div class="text-left">
+          <p class="text-white font-semibold text-lg">
+            <%= race.race_type_label %>
+          </p>
 
-  <%= render @race %>
+          <p class="text-sm text-gray-400 mt-0.5">
+            <%= l(race.date, format: :long) %>
 
-  <%= link_to "Edit this race", edit_race_path(@race), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to races", races_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this race", @race, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+          </p>
+        </div>
+
+      </button>
+
+          <!-- Conteúdo expandido -->
+      <div
+        data-accordion-target="content"
+        class="hidden bg-gray-950 px-5 py-4">
+
+        <% bet ||= @bet || current_user.bets.find_by(race: race) || Bet.new(submitted: false) %>
+        <%# Ensure race is defined (derive from bet if missing) %>
+        <% race ||= bet&.race %>
+        <%= render "bets/grid",
+            race: race,
+              # If bet exists, use its order; otherwise fallback to race drivers
+            drivers: (bet ? bet.ordered_drivers : race.drivers),
+            bet: bet %>
+      </div>
+    </div>
+  <% end %>
 </div>

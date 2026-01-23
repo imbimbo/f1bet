@@ -129,19 +129,19 @@ if meetings.any?
       api_id: meeting[:meeting_key] || meeting[:api_id]
     )
 
-    # Race.create!(
-    #   name: meeting[:meeting_name] || meeting[:name] || "Qualifying",
-    #   location: meeting[:location] || meeting[:circuit_short_name] || "TBA",
-    #   date: date_start,
-    #   start_time: start_time,
-    #   year: year,
-    #   race_type: "qualifying",  # Must be lowercase per Race model validation
-    #   status: "upcoming",
-    #   # Map the API keys to your new database columns
-    #   circuit_image_url: meeting[:circuit_image] || meeting[:img],
-    #   country_flag_url: meeting[:country_flag],
-    #   api_id: meeting[:meeting_key] || meeting[:api_id]
-    # )
+    Race.create!(
+      name: meeting[:meeting_name] || meeting[:name] || "Qualifying",
+      location: meeting[:location] || meeting[:circuit_short_name] || "TBA",
+      date: date_start,
+      start_time: start_time,
+      year: year,
+      race_type: "qualifying",  # Must be lowercase per Race model validation
+      status: "upcoming",
+      # Map the API keys to your new database columns
+      circuit_image_url: meeting[:circuit_image] || meeting[:img],
+      country_flag_url: meeting[:country_flag],
+      api_id: meeting[:meeting_key] || meeting[:api_id]
+    )
   end
 
 else

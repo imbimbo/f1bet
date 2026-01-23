@@ -4,12 +4,29 @@ class RacesController < ApplicationController
   # GET /races or /races.json
   def index
     @races = Race
-              .ordered_for_calendar
-              .includes(bets: { bet_positions: :driver })
+            .where(race_type: "race")
+            .ordered_for_calendar
+            .includes(bets: { bet_positions: :driver })
+
+  end
+
+  # GET /races/1 or /races/1.json
+
+  def show
+    # sessão principal do GP (race)
+    @main_race = Race.find_by!(
+      api_id: @race.api_id,
+      race_type: "race"
+    )
+
+    @sessions = Race
+            .where(api_id: @race.api_id)
+            .ordered_for_calendar
+            .includes(bets: { bet_positions: :driver })
 
     @drivers_by_race = {}
 
-    @races.each do |race|
+    @sessions.each do |race|
       bet = current_user.bets.find_by(race: race)
 
       drivers =
@@ -19,15 +36,11 @@ class RacesController < ApplicationController
             .order(:position)
             .map(&:driver)
         else
-          Driver.all
+          race.drivers
         end
 
       @drivers_by_race[race.id] = drivers
     end
-  end
-
-  # GET /races/1 or /races/1.json
-  def show
   end
 
   # GET /races/new

@@ -26,6 +26,13 @@ class F1ApiService
     response.body
   end
 
+  def get_sessions(meeting_key)
+    response = @conn.get("sessions") do |req|
+      req.params["meeting_key"] = meeting_key
+    end
+    response.body || []
+  end
+
   def get_meetings(year = 2026)
     response = @conn.get("meetings") do |req|
       req.params['year'] = year

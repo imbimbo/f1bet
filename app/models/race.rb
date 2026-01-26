@@ -12,17 +12,16 @@ class Race < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
 
   scope :ordered_for_calendar, -> {
-  order(
-    :date,
-    Arel.sql(
-      "CASE race_type
-        WHEN 'qualifying' THEN 1
-        WHEN 'race' THEN 2
-        ELSE 4
-      END"
+    order(
+      :start_time,
+      Arel.sql(
+        "CASE race_type
+          WHEN 'qualifying' THEN 1
+          WHEN 'race' THEN 2
+        END"
+      )
     )
-  )
-}
+  }
 
   def race_type_label
     I18n.t("races.types.#{race_type}")

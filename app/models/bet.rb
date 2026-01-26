@@ -10,23 +10,36 @@ class Bet < ApplicationRecord
   validate :not_locked
   validate :exactly_ten_positions_when_submitted
 
+  POINTS_TABLE = {
+    1 => 25,
+    2 => 18,
+    3 => 15,
+    4 => 12,
+    5 => 10,
+    6 => 8,
+    7 => 6,
+    8 => 4,
+    9 => 2,
+    10 => 1
+  }.freeze
+
   # Calculate and save points for this bet
   def calculate_points!
-    return unless race.result.present? || race.results.any?
+    return if race.results.empty?
 
     total = 0
 
-    # Loop through each BetPosition
-    bet_positions.includes(:driver).each do |bp|
-      # Find official result for this driver
+    bet_positions.find_each do |bp|
       result = race.results.find_by(driver_id: bp.driver_id)
       next unless result
 
-      # Add points if the position matches
-      total += result.points if result.position == bp.position
+      # exact position hit
+      if result.position == bp.position
+        total += POINTS_TABLE[result.position] || 0
+      end
     end
 
-    update!(points: total)
+    update_column(:points, total)
   end
 
   def locked?

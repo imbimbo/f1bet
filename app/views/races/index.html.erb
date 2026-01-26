@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
   <% @races.each do |race| %>
-    <%= link_to race_path(race), class: "block group" do %>
-      <div class="relative w-full bg-[#0a0a0a] rounded-3xl p-6 border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.6)] transition-all duration-300 hover:shadow-[0_0_40px_rgba(255,135,0,0.8)] transform hover:scale-105">
+    <%= link_to race_path(race), class: "block group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500" do %>
+      <div class="relative w-full bg-[#0a0a0a] rounded-3xl p-6">
 
 
         <div class="flex items-center gap-4 mb-3">

@@ -1,48 +1,84 @@
-<div class="md:col-span-2 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-[#FF8700] hover:to-purple-600 transition-all duration-500 ">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+  <!-- Upcoming Race Card - Large, spans 2 columns and 2 rows -->
+  <div class="md:col-span-2 lg:col-span-2 lg:row-span-2 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
 
-    <div class="relative h-full w-full bg-[#0a0a0a] rounded-3xl overflow-hidden flex flex-col justify-between p-8">
+    <div class="relative h-full w-full bg-[#0a0a0a] rounded-3xl overflow-hidden flex flex-col justify-between p-6 md:p-8">
 
       <% next_race = @upcoming_races.first %>
 
-      <div class="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent pointer-events-none"></div>
+      <div class="absolute top-0 right-0 w-32 h-32  transition-all"></div>
 
-      <div class="relative z-10 ">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF8700]/10 border border-[#FF8700]/20 text-[#FF8700] text-xs font-bold uppercase tracking-wider mb-6 backdrop-blur-md">
+      <div class="absolute inset-0 pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF8700]/10 border border-[#FF8700]/20 text-[#FF8700] text-sm md:text-xl lg:text-2xl sm:text-xs font-bold uppercase tracking-wider mb-6 backdrop-blur-md">
           <span class="w-1.5 h-1.5 rounded-full bg-[#FF8700] animate-pulse"></span>
           Próximo Grande Prêmio
         </div>
 
-        <div class="flex items-center gap-4 mb-2 px-8">
-          <h2 class="text-4xl md:text-5xl font-black italic text-white leading-none uppercase tracking-tighter mt-8">
-            <%= next_race_display_name(next_race) || "Season Over" %>
-          </h2>
-
+        <!-- Title: Country Name + Flag -->
+        <div class="flex items-center gap-4 mb-3">
+          <h1 class="text-4xl md:text-5xl font-black italic text-white uppercase">
+            <%= country_name_pt_br(next_race) || "Season Over" %>
+          </h1>
           <% if next_race&.country_flag_url.present? %>
-            <%= image_tag next_race.country_flag_url, class: "h-8 w-auto p-3 rounded shadow-[0_0_15px_rgba(255,255,255,0.1)]" %>
+            <div class="h-10 w-10 rounded-full overflow-hidden shadow-md shrink">
+              <%= image_tag next_race.country_flag_url,
+                class: "h-full w-full object-cover" %>
+            </div>
           <% end %>
         </div>
 
-        <p class="text-gray-400 font-medium text-lg border-l-2 border-gray-700 pl-3 ml-1 mb-6">
+        <!-- Subtitle: Circuit Name -->
+        <p class="text-gray-400 font-medium text-lg mb-5 mt-3">
+          <%= next_race&.official_name.presence || circuit_name(next_race) if next_race %>
+        </p>
+
+        <!-- Location and Date -->
+        <p class="text-white font-medium text-lg mb-6">
           <%= next_race&.location %>
           <% if next_race&.date.present? %>
-            <span class="text-gray-500"> • <%= format_date_pt_br(next_race.date) %></span>
+            <span class="text-white"> • <%= format_date_pt_br(next_race.date) %></span>
           <% end %>
         </p>
 
+        <!-- Track Image -->
         <% track_url = next_race&.circuit_image_url %>
-
-        <% if track_url.present? %>
-          <div class="flex justify-center items-center my-4">
-            <%= image_tag track_url, alt: "Track layout", class: "max-w-full h-auto max-h-32 object-contain" %>
+        <% if track_url.present? && track_url.strip.present? %>
+          <div class="flex justify-center items-center my-8">
+            <%= image_tag track_url,
+              alt: "Track layout",
+              class: "w-full max-w-2xl lg:max-w-2xl h-auto max-h-96 lg:max-h-80 object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300" %>
+          </div>
+        <% elsif next_race %>
+          <div class="flex justify-center items-center my-8">
+            <!-- Fallback: Generic F1 Track Icon -->
+            <svg class="w-full max-w-4xl lg:max-w-3xl h-auto max-h-96 lg:max-h-80 opacity-40" viewBox="0 0 300 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 75 L80 75 Q100 50 120 75 L150 75 Q170 100 190 75 L250 75"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <path d="M30 75 L80 75 Q100 100 120 75 L150 75 Q170 50 190 75 L250 75"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <circle cx="30" cy="75" r="6" fill="white"/>
+              <circle cx="250" cy="75" r="6" fill="white"/>
+            </svg>
           </div>
         <% end %>
       </div>
 
-      <div class="relative z-10 mt-8 mb-8">
+      <div class="relative z-10 mt-8 mb-8 flex justify-center">
         <% if next_race %>
-          <%= link_to race_path(next_race), class: "group/btn inline-flex items-center gap-3" do %>
-            <div class="h-12 w-12 rounded-full bg-[#FF8700] text-black flex items-center justify-center font-bold transition-transform group-hover/btn:scale-110 shadow-[0_0_20px_rgba(255,135,0,0.4)]">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          <%= link_to race_path(next_race), class: "group/btn inline-flex items-center" do %>
+            <div class="h-12 px-6 rounded-full bg-[#FF8700] text-black flex items-center justify-center gap-3 font-bold transition-transform group-hover/btn:scale-110 shadow-[0_0_20px_rgba(255,135,0,0.4)]">
+              <p class="whitespace-nowrap lg:text-lg md:text-md sm:text-sm">Montar o Grid</p>
+              <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </div>
           <% end %>
         <% end %>
@@ -50,20 +86,21 @@
     </div>
   </div>
 
-  <div class="md:col-span-1 md:row-span-2 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
-    <div class="h-full w-full bg-[#0a0a0a] rounded-3xl p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
+  <!-- Championship Card - Top right, stacked vertically with Minhas Apostas (smaller box) -->
+  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+    <div class="h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center text-center relative overflow-hidden">
 
       <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
 
-      <h3 class="text-gray-500 text-xs font-bold uppercase tracking-[0.2em] mb-4">Championship</h3>
+      <h3 class="text-gray-500 text-[10px] text-lg font-bold uppercase tracking-[0.2em] mb-5">Championship</h3>
 
-      <div class="text-[8rem] leading-none font-black italic text-white tracking-tighter mix-blend-overlay opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 select-none">
+      <div class="text-[5rem] leading-none font-black italic text-white tracking-tighter mix-blend-overlay opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 select-none ">
         <%= @position %>
       </div>
 
       <div class="relative z-10">
-        <div class="text-6xl font-black italic text-white mb-2">P<%= @position %></div>
-        <div class="text-sm font-mono text-blue-400 bg-blue-500/10 px-3 py-1 rounded border border-blue-500/20 inline-block">
+        <div class="text-4xl md:text-5xl font-black italic text-white mb-3">P<%= @position %></div>
+        <div class="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20 inline-block mb-5">
           <%= @total_points %> Pontos
         </div>
       </div>
@@ -71,27 +108,54 @@
     </div>
   </div>
 
-  <div class="md:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-green-500 hover:to-emerald-400 transition-all duration-500">
-    <%= link_to bet_positions_path, class: "block h-full w-full bg-[#0a0a0a] rounded-3xl p-6 relative overflow-hidden" do %> <div class="flex items-center justify-between mb-4">
-        <div class="p-3 bg-green-900/20 rounded-xl text-green-400 group-hover:text-white group-hover:bg-green-500 transition-all">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+  <!-- Minhas Apostas Card - Below Championship, stacked vertically (smaller box) -->
+  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+    <%= link_to bet_positions_path, class: "flex items-center h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 relative overflow-hidden" do %>
+      <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
+      <div class="flex items-center justify-between w-full">
+        <div class="flex items-center gap-2">
+          <div class="p-2 rounded-xl text-white flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 class="text-2xl md:text-xl font-bold text-white">Minhas Apostas</h3>
         </div>
-        <svg class="w-5 h-5 text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        <svg class="w-4 h-4 text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
       </div>
-      <h3 class="text-xl font-bold text-white group-hover:text-green-400 transition-colors">Minhas Apostas</h3>
-      <p class="text-xs text-gray-500 mt-1">Gerenciar suas apostas ativas</p>
+
     <% end %>
   </div>
 
-  <div class="md:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-purple-500 hover:to-pink-400 transition-all duration-500">
-    <%= link_to root_path, class: "block h-full w-full bg-[#0a0a0a] rounded-3xl p-6 relative overflow-hidden" do %> <div class="flex items-center justify-between mb-4">
-        <div class="p-3 bg-purple-900/20 rounded-xl text-purple-400 group-hover:text-white group-hover:bg-purple-500 transition-all">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+  <!-- Ranking Geral Card - Bottom row, side by side with Resultados -->
+  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+    <%= link_to root_path, class: "flex items-center h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 relative overflow-hidden" do %>
+      <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
+      <div class="flex items-center justify-between w-full">
+        <div class="flex items-center gap-2">
+          <div class="p-2 rounded-xl text-white flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          </div>
+          <h3 class="text-2xl md:text-xl font-bold text-white">Ranking Geral</h3>
         </div>
-        <svg class="w-5 h-5 text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        <svg class="w-4 h-4 text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
       </div>
-      <h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition-colors">Ranking Geral</h3>
-      <p class="text-xs text-gray-500 mt-1">Veja quem está liderando</p>
+
+    <% end %>
+  </div>
+
+  <!-- Resultados Card - Bottom row, side by side with Ranking Geral -->
+  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+    <%= link_to results_path, class: "flex items-center h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 relative overflow-hidden" do %>
+      <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
+      <div class="flex items-center justify-between w-full">
+        <div class="flex items-center gap-2">
+          <div class="p-2 rounded-xl text-white flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          </div>
+          <h3 class="text-2xl md:text-xl font-bold text-white">Resultados</h3>
+        </div>
+        <svg class="w-4 h-4 text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </div>
+
     <% end %>
   </div>
 

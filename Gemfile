@@ -51,6 +51,8 @@ gem 'devise'
 
 gem 'faker'
 
+gem 'rails-i18n'
+
 #For API errors handling
 gem 'faraday'
 

@@ -26,4 +26,31 @@ class Race < ApplicationRecord
   def race_type_label
     I18n.t("races.types.#{race_type}")
   end
+
+  def locked?
+    return false if start_time.blank?
+    # Lock bets 5 minutes before race start
+    Time.current >= (start_time - 5.minutes)
+  end
+
+  def lock_time
+    return nil if start_time.blank?
+    start_time - 5.minutes
+  end
+
+  def time_until_lock
+    return nil if start_time.blank? || locked?
+    distance_of_time_in_words(Time.current, lock_time)
+  end
+
+  # Optional: Helper for display
+  def betting_status
+    if locked?
+      "Bloqueado"
+    elsif start_time.blank?
+      "Horário indefinido"
+    else
+      "Aberto (fecha em #{time_until_lock})"
+    end
+  end
 end

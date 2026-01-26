@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resources :results
   resources :bet_positions
+  resources :championship_results
   resources :bets
   resources :races
   resources :drivers

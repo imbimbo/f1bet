@@ -108,26 +108,58 @@ if meetings.any?
   puts "✅ API Data Found! Creating races..."
 
   meetings.each do |meeting|
-    # Logic: Only save "Grand Prix" events (skip pre-season testing)
     next unless meeting[:meeting_name]&.match?(/Grand Prix/i)
 
-    # Parse date and create start_time
-    date_start = meeting[:date_start] || meeting[:date]
-    start_time = date_start ? Time.parse(date_start.to_s) : Time.current
-    year = start_time.year
+    sessions = service.get_sessions(meeting[:meeting_key])
 
-    Race.create!(
-      name: meeting[:meeting_name] || "Grand Prix",
-      location: meeting[:location] || meeting[:circuit_short_name] || "TBA",
-      date: date_start,
-      start_time: start_time,
-      year: year,
-      race_type: "race",
-      status: "upcoming",
-      circuit_image_url: meeting[:circuit_image] || meeting[:img],
-      country_flag_url: meeting[:country_flag],
-      api_id: meeting[:meeting_key] || meeting[:api_id]
-    )
+    sessions.each do |session|
+      session_type = session[:session_type]&.downcase
+      date_start   = session[:date_start]
+
+      # só sessões que você quer
+      next unless %w[race qualifying sprint].include?(session_type)
+      next if date_start.blank?
+
+      start_time = Time.parse(date_start)
+
+      Race.create!(
+        name: meeting[:meeting_name],
+        location: meeting[:location] || meeting[:circuit_short_name],
+        date: start_time.to_date,
+        start_time: start_time,
+        year: start_time.year,
+        race_type: session_type,
+        status: "upcoming",
+        circuit_image_url: meeting[:circuit_image],
+        country_flag_url: meeting[:country_flag],
+        api_id: meeting[:meeting_key],
+        api_session_id: session[:session_key]
+      )
+    end
+
+  end
+
+  # meetings.each do |meeting|
+  #   # Logic: Only save "Grand Prix" events (skip pre-season testing)
+  #   next unless meeting[:meeting_name]&.match?(/Grand Prix/i)
+
+  #   # Parse date and create start_time
+  #   date_start = meeting[:date_start] || meeting[:date]
+  #   start_time = date_start ? Time.parse(date_start.to_s) : Time.current
+    # year = start_time.year
+
+    # Race.create!(
+    #   name: meeting[:meeting_name] || "Grand Prix",
+    #   location: meeting[:location] || meeting[:circuit_short_name] || "TBA",
+    #   date: date_start,
+    #   start_time: start_time,
+    #   year: year,
+    #   race_type: "race",
+    #   status: "upcoming",
+    #   circuit_image_url: meeting[:circuit_image] || meeting[:img],
+    #   country_flag_url: meeting[:country_flag],
+    #   api_id: meeting[:meeting_key] || meeting[:api_id]
+    # )
 
     # Race.create!(
     #   name: meeting[:meeting_name] || meeting[:name] || "Qualifying",
@@ -142,7 +174,27 @@ if meetings.any?
     #   country_flag_url: meeting[:country_flag],
     #   api_id: meeting[:meeting_key] || meeting[:api_id]
     # )
-  end
+
+  #   sessions = service.get_sessions(meeting[:meeting_key])
+
+  #   sessions.each do |session|
+  #     start_time = Time.parse(session[:date_start])
+
+  #     Race.create!(
+  #       name: meeting[:meeting_name],
+  #       location: meeting[:location],
+  #       date: start_time.to_date,
+  #       start_time: start_time,
+  #       year: start_time.year,
+  #       race_type: session[:session_type].downcase, # race, qualifying, sprint
+  #       status: "upcoming",
+  #       api_id: meeting[:meeting_key],
+  #       api_session_id: session[:session_key],
+  #       circuit_image_url: meeting[:circuit_image],
+  #       country_flag_url: meeting[:country_flag]
+  #     )
+  #   end
+  # end
 
 else
   puts "⚠️ API returned empty for 2026. Deploying Safety Car (Hardcoded Data)..."

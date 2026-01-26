@@ -1,57 +1,41 @@
 <h1 class="text-3xl font-bold mb-6 text-white">Corridas</h1>
 
-<div class="space-y-3">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
   <% @races.each do |race| %>
-    <div
-      class="rounded-lg border border-gray-800 overflow-hidden"
-      data-controller="accordion"
-    >
-      <!-- Linha da corrida -->
-      <button
-        type="button"
-        data-action="click->accordion#toggle"
-        class="
-          w-full flex justify-between items-center
-          px-5 py-4
-          bg-gray-900 hover:bg-gray-800
-          transition-colors
-        "
-      >
-        <div class="text-left">
-          <p class="text-white font-semibold text-lg">
-            <%= race_display_name(race) %>
-          </p>
+    <%= link_to race_path(race), class: "block group" do %>
+      <div class="relative w-full bg-[#0a0a0a] rounded-3xl p-8
+                  border border-white/10
+                  shadow-[0_0_30px_rgba(0,0,0,0.6)]
+                  hover:shadow-[0_0_40px_rgba(255,128,0,1)]
+                  transition-all duration-300
+                  hover:-translate-y-1">
 
-          <p class="text-sm text-gray-400 mt-0.5">
-            <%= l(race.date, format: :long) %>
-            •
-            <%= race.race_type_label %>
-          </p>
+        <div class="flex items-center gap-4 mb-4">
+          <h2 class="text-4xl font-black italic text-white uppercase tracking-tighter">
+            <%= race_display_name(race) || "Season Over" %>
+          </h2>
+
+          <% if race.country_flag_url.present? %>
+            <%= image_tag race.country_flag_url,
+              class: "h-8 w-auto rounded shadow" %>
+          <% end %>
         </div>
 
-        <span
-          data-accordion-target="icon"
-          class="text-gray-400 transform transition-transform"
-        >
-          ▼
-        </span>
-      </button>
+        <p class="text-gray-400 font-medium text-lg border-l-2 border-gray-700 pl-3 mb-6">
+          <%= race.location %>
+          <% if race.date.present? %>
+            <span class="text-gray-500"> • <%= format_date_pt_br(race.date) %></span>
+          <% end %>
+        </p>
 
-      <!-- Conteúdo expandido -->
-      <div
-        data-accordion-target="content"
-        class="hidden bg-gray-950 px-5 py-4"
-      >
-        <% bet ||= @bet || current_user.bets.find_by(race: race) || Bet.new(submitted: false) %>
-        <%# Ensure race is defined (derive from bet if missing) %>
-        <% race ||= bet&.race %>
-        <%= render "bets/grid",
-            race: race,
-              # If bet exists, use its order; otherwise fallback to race drivers
-            drivers: (bet ? bet.ordered_drivers : race.drivers),
-            bet: bet %>
+        <% if race.circuit_image_url.present? %>
+          <div class="flex justify-center">
+            <%= image_tag race.circuit_image_url,
+              class: "max-h-32 object-contain opacity-90 group-hover:opacity-100 transition" %>
+          </div>
+        <% end %>
 
       </div>
-    </div>
+    <% end %>
   <% end %>
 </div>

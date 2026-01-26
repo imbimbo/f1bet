@@ -1,39 +1,84 @@
-<h1 class="text-3xl font-bold mb-6 text-white">Corridas</h1>
-
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
   <% @races.each do |race| %>
     <%= link_to race_path(race), class: "block group" do %>
-      <div class="relative w-full bg-[#0a0a0a] rounded-3xl p-8
-                  border border-white/10
-                  shadow-[0_0_30px_rgba(0,0,0,0.6)]
-                  hover:shadow-[0_0_40px_rgba(255,128,0,1)]
-                  transition-all duration-300
-                  hover:-translate-y-1">
+      <div class="relative w-full bg-[#0a0a0a] rounded-3xl p-6 border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.6)] transition-all duration-300 hover:shadow-[0_0_40px_rgba(255,135,0,0.8)] transform hover:scale-105">
 
-        <div class="flex items-center gap-4 mb-4">
+
+        <div class="flex items-center gap-4 mb-3">
           <h2 class="text-4xl font-black italic text-white uppercase tracking-tighter">
-            <%= race_display_name(race) || "Season Over" %>
+            <%= country_name_pt_br(race) %>
           </h2>
-
           <% if race.country_flag_url.present? %>
-            <%= image_tag race.country_flag_url,
-              class: "h-8 w-auto rounded shadow" %>
+            <div class="h-8 w-8 rounded-full overflow-hidden shadow-md object-cover">
+              <%= image_tag race.country_flag_url,
+                class: "h-full w-full object-cover" %>
+            </div>
           <% end %>
         </div>
 
-        <p class="text-gray-400 font-medium text-lg border-l-2 border-gray-700 pl-3 mb-6">
-          <%= race.location %>
-          <% if race.date.present? %>
-            <span class="text-gray-500"> • <%= format_date_pt_br(race.date) %></span>
-          <% end %>
+        <!-- Subtitle: Circuit Name -->
+        <p class="text-gray-400 font-medium text-lg mb-5 mt-3">
+          <%= race.official_name.presence || circuit_name(race) %>
         </p>
 
-        <% if race.circuit_image_url.present? %>
-          <div class="flex justify-center">
+        <!-- Track Image -->
+        <div class="flex justify-center items-center h-32 rounded-lg overflow-hidden bg-transparent mb-5" id="track-image-<%= race.id %>">
+          <% if race.circuit_image_url.present? && race.circuit_image_url.strip.present? %>
             <%= image_tag race.circuit_image_url,
-              class: "max-h-32 object-contain opacity-90 group-hover:opacity-100 transition" %>
-          </div>
-        <% end %>
+              class: "h-full w-auto object-contain rounded-lg opacity-90 group-hover:opacity-100 transition-opacity duration-300",
+              onerror: "this.style.display='none'; this.nextElementSibling.style.display='block';",
+              alt: "Circuit layout" %>
+          <!--Fallback: Generic F1 Track Icon-->
+            <svg class="h-full w-auto opacity-40" style="display: none;" viewBox="0 0 300 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 75 L80 75 Q100 50 120 75 L150 75 Q170 100 190 75 L250 75"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <path d="M30 75 L80 75 Q100 100 120 75 L150 75 Q170 50 190 75 L250 75"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <circle cx="30" cy="75" r="6" fill="white"/>
+              <circle cx="250" cy="75" r="6" fill="white"/>
+            </svg>
+          <% else %>
+            <!-- Fallback: Generic F1 Track Icon -->
+            <svg class="h-full w-auto opacity-40" viewBox="0 0 300 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 75 L80 75 Q100 50 120 75 L150 75 Q170 100 190 75 L250 75"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <path d="M30 75 L80 75 Q100 100 120 75 L150 75 Q170 50 190 75 L250 75"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <circle cx="30" cy="75" r="6" fill="white"/>
+              <circle cx="250" cy="75" r="6" fill="white"/>
+            </svg>
+          <% end %>
+        </div>
+
+        <!-- Date Range -->
+        <div class="flex justify-end">
+          <% date_range = format_date_range(race) %>
+          <% if date_range.present? %>
+            <p class="text-white font-bold text-2xl">
+              <%= date_range %>
+            </p>
+          <% elsif race.date.present? %>
+            <p class="text-white font-bold text-2xl">
+              <%= format_short_date(race.date) %>
+            </p>
+          <% end %>
+        </div>
 
       </div>
     <% end %>

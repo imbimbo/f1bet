@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_22_164230) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_26_191156) do
   create_table "bet_positions", force: :cascade do |t|
     t.integer "bet_id", null: false
     t.integer "driver_id", null: false
@@ -61,6 +61,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_22_164230) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["driver_id"], name: "index_race_drivers_on_driver_id"
+    t.index ["race_id", "driver_id"], name: "index_race_drivers_on_race_id_and_driver_id", unique: true
     t.index ["race_id"], name: "index_race_drivers_on_race_id"
   end
 
@@ -79,6 +80,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_22_164230) do
     t.integer "api_id"
     t.string "circuit_image_url"
     t.string "country_flag_url"
+    t.string "official_name"
+    t.datetime "date_start"
+    t.datetime "date_end"
     t.index ["api_id"], name: "index_races_on_api_id"
   end
 

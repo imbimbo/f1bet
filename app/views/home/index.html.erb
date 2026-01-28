@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min lg:auto-rows-fr">
   <!-- Upcoming Race Card - Large, spans 2 columns and 2 rows -->
   <div class="md:col-span-2 lg:col-span-2 lg:row-span-2 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
 
@@ -11,7 +11,7 @@
       <div class="absolute inset-0 pointer-events-none"></div>
 
       <div class="relative z-10">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF8700]/10 border border-[#FF8700]/20 text-[#FF8700] text-sm md:text-xl lg:text-2xl sm:text-xs font-bold uppercase tracking-wider mb-6 backdrop-blur-md">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF8700]/10 border border-[#FF8700]/20 text-[#FF8700] text-xs md:text-sm lg:text-sm sm:text-xs font-bold uppercase tracking-wider mb-6 backdrop-blur-md">
           <span class="w-1.5 h-1.5 rounded-full bg-[#FF8700] animate-pulse"></span>
           Próximo Grande Prêmio
         </div>
@@ -86,9 +86,9 @@
     </div>
   </div>
 
-  <!-- Championship Card - Top right, stacked vertically with Minhas Apostas (smaller box) -->
-  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
-    <div class="h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center text-center relative overflow-hidden">
+  <!-- Championship Card - Top right, spans full column height beside Next Race on large screens -->
+  <div class="md:col-span-2 lg:col-span-1 lg:row-span-2 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+    <div class="h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[200px] md:min-h-[250px]">
 
       <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
 
@@ -108,8 +108,8 @@
     </div>
   </div>
 
-  <!-- Minhas Apostas Card - Below Championship, stacked vertically (smaller box) -->
-  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+  <!-- Minhas Apostas Card - Bottom row, side by side with Ranking Geral and Resultados on large screens -->
+  <div class="md:col-span-2 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
     <%= link_to bet_positions_path, class: "flex items-center h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 relative overflow-hidden" do %>
       <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
       <div class="flex items-center justify-between w-full">
@@ -125,8 +125,8 @@
     <% end %>
   </div>
 
-  <!-- Ranking Geral Card - Bottom row, side by side with Resultados -->
-  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+  <!-- Ranking Geral Card - Bottom row, side by side with Minhas Apostas and Resultados on large screens -->
+  <div class="md:col-span-2 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
     <%= link_to root_path, class: "flex items-center h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 relative overflow-hidden" do %>
       <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
       <div class="flex items-center justify-between w-full">
@@ -142,9 +142,9 @@
     <% end %>
   </div>
 
-  <!-- Resultados Card - Bottom row, side by side with Ranking Geral -->
-  <div class="md:col-span-1 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
-    <%= link_to results_path, class: "flex items-center h-full w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 relative overflow-hidden" do %>
+  <!-- Resultados Card - Bottom row, side by side with Minhas Apostas and Ranking Geral on large screens -->
+  <div class="md:col-span-2 lg:col-span-1 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+    <%= link_to results_path, class: "flex items-center h-24 w-full bg-[#0a0a0a] rounded-3xl p-4 md:p-5 relative overflow-hidden" do %>
       <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all"></div>
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center gap-2">

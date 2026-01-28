@@ -1,17 +1,41 @@
 <% content_for :title, race_display_name(@main_race) %>
 
-<div class="mb-8">
-  <!-- Nome do GP -->
-  <h1 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
-    <%= race_display_name(@main_race) %>
-  </h1>
+<div class="mb-8 px-6 md:px-0">
+  <!-- Country Name with Flag -->
+  <div class="flex items-center gap-4 mb-3 mt-8">
+    <h1 class="text-4xl md:text-5xl font-black italic uppercase  text-white">
+      <%= country_name_pt_br(@main_race) %>
+    </h1>
+    <% if @main_race.country_flag_url.present? %>
+      <div class="h-10 w-10 rounded-full overflow-hidden shadow-md object-cover">
+        <%= image_tag @main_race.country_flag_url,
+          class: "h-full w-full object-cover" %>
+      </div>
+    <% end %>
+  </div>
 
-  <!-- Local + Data/Hora BR -->
-  <p class="text-gray-400 mt-2 text-lg">
+  <!-- Official Name -->
+  <% if @main_race.official_name.present? %>
+    <p class="text-gray-400 font-normal text-2xl md:text-lg mb-2">
+      <%= @main_race.official_name %>
+      <% if @main_race.year.present? %>
+
+      <% end %>
+    </p>
+  <% end %>
+
+  <!-- Location • Date -->
+  <p class="text-gray-400 font-normal text-lg md:text-lg mb-4">
     <%= @main_race.location %>
     •
-    <%= l(@main_race.start_time.in_time_zone("America/Sao_Paulo"), format: :long) %>
-    (Horário de Brasília)
+    <% if @main_race.date.present? %>
+      <%= format_date_pt_br(@main_race.date) %>
+    <% elsif @main_race.start_time.present? %>
+      <%= format_date_pt_br(@main_race.start_time.in_time_zone("America/Sao_Paulo").to_date) %>
+    <% end %>
+    <% if @main_race.start_time.present? %>
+      • <%= @main_race.start_time.in_time_zone("America/Sao_Paulo").strftime("%H:%M") %> (BRT)
+    <% end %>
   </p>
 
   <!-- Imagem do circuito -->
@@ -19,39 +43,47 @@
     <div class="mt-6 flex justify-center">
       <%= image_tag @main_race.circuit_image_url,
         alt: "Circuit layout",
-        class: "max-h-56 object-contain opacity-90" %>
+        class: "w-full max-w-3xl lg:max-w-3xl h-auto max-h-96 lg:max-h-80 object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300" %>
     </div>
   <% end %>
 </div>
-
-<div class="space-y-4">
+<h2 class="text-white font-semibold text-2xl md:text-xl lg:text-2xl mb-6 px-6 md:px-0 justify-center flex">Montar o grid da aposta</h2>
+<div class="space-y-4 px-6 md:px-0">
   <% @sessions.each do |race| %>
     <div
-      class="rounded-lg border border-gray-800 overflow-hidden"
+      class="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500"
       data-controller="accordion"
         >
         <!-- Linha da corrida -->
-      <button
-        type="button"
-        data-action="click->accordion#toggle"
-        class="
-          w-full flex justify-between items-center
-          px-5 py-4
-          bg-gray-900 hover:bg-gray-800
-          transition-colors">
-        <div class="text-left">
-          <p class="text-white font-semibold text-lg">
-            <%= race.race_type_label %>
-          </p>
+      <div class="w-full bg-[#0a0a0a] rounded-xl overflow-hidden">
+        <button
+          type="button"
+          data-action="click->accordion#toggle"
+          data-accordion-target="button"
+          class="
+            w-full flex justify-between items-center
+            px-5 py-4
+            bg-[#0a0a0a]
+            transition-all duration-200
+            hover:bg-[#FF8700]">
+          <div class="text-left">
 
-        </div>
+            <p class="text-white font-semibold text-md md:text-2xl px-3 md:px-0 transition-colors duration-200" data-accordion-target="text">
+              <%= race.race_type_label %>
+            </p>
 
-      </button>
+          </div>
 
-          <!-- Conteúdo expandido -->
-      <div
-        data-accordion-target="content"
-        class="hidden bg-gray-950 px-5 py-4">
+          <svg class="w-5 h-5 md:w-6 md:h-6 text-white transition-all duration-200" data-accordion-target="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+
+        </button>
+
+            <!-- Conteúdo expandido -->
+        <div
+          data-accordion-target="content"
+          class="hidden bg-[#0a0a0a] px-0 md:px-3 py-4">
 
         <% bet ||= @bet || current_user.bets.find_by(race: race) || Bet.new(submitted: false) %>
         <%# Ensure race is defined (derive from bet if missing) %>
@@ -61,6 +93,7 @@
               # If bet exists, use its order; otherwise fallback to race drivers
             drivers: (bet ? bet.ordered_drivers : race.drivers),
             bet: bet %>
+        </div>
       </div>
     </div>
   <% end %>

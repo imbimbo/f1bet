@@ -7,14 +7,15 @@
     data: { controller: "sortable", action: "submit->sortable#updateForm" } do |f| %>
     <%= f.hidden_field :race_id, value: race.id %>
 
-    <table class="w-full text-sm text-gray-200">
-      <thead>
-        <tr class="border-b border-gray-800">
-          <th class="py-2 text-left">Piloto</th>
-          <th class="py-2 text-left">Equipe</th>
-          <th class="py-2 text-right w-20">Posição</th>
-        </tr>
-      </thead>
+    <div class="overflow-x-auto -mx-6 md:mx-0">
+      <table class="w-full text-sm text-gray-200 border-collapse min-w-[320px]">
+        <%# <thead>
+          <tr class="border-b border-gray-800">
+            <th class="py-2 text-left text-sm md:text-base lg:text-xl px-3 md:px-6">Piloto</th>
+            <th class="py-2 text-left text-sm md:text-base lg:text-xl px-3 md:px-6 hidden md:table-cell">Equipe</th>
+            <th class="py-2 text-right text-sm md:text-base lg:text-xl w-12 md:w-20 px-3 md:px-6">Posição</th>
+          </tr>
+        </thead> %>
 
     <%
       # Use the drivers passed from controller if available (preserves saved order),
@@ -35,8 +36,11 @@
       <% existing_position = bet.bet_positions.find { |bp| bp.driver_id == driver.id } if bet.persisted? %>
 
         <tr data-id="<%= driver.id %>"
-          class="border-b border-gray-900 hover:bg-gray-900 cursor-move"
+          class="relative border-b border-gray-900 cursor-move"
           draggable="true">
+          <td colspan="3" class="p-[1px]">
+            <div class="relative rounded-lg bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
+              <div class="bg-[#0a0a0a] rounded-lg flex items-center">
 
         <%# --- START HIDDEN FIELDS --- %>
           <% if existing_position %>
@@ -52,36 +56,62 @@
 
           <%# --- END HIDDEN FIELDS --- %>
 
-          <td class="py-2 font-medium text-gray-200">
-            <div class="flex items-center gap-3">
-              <img src="<%= driver.headshot_url %>" class="w-9 h-9 rounded-full">
-              <%= driver.name %>
+          <div class="py-2 font-medium text-gray-200 px-3 md:px-6 flex-1 min-w-0">
+            <div class="flex flex-col items-center gap-1 md:gap-2">
+              <% headshot_opacity = index + 1 > 10 ? 'opacity-40' : 'opacity-100' %>
+              <% driver_name_opacity = index + 1 > 10 ? 'opacity-40' : 'opacity-100' %>
+              <% if driver.headshot_url.present? %>
+                <img src="<%= driver.headshot_url %>" 
+                     class="driver-headshot w-18 h-18 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full flex-shrink-0 object-cover transition-opacity duration-300 <%= headshot_opacity %>" 
+                     alt="<%= driver.name %>"
+                     data-sortable-target="headshot">
+              <% else %>
+                <%= image_tag 'avatar.png', 
+                    class: "driver-headshot w-[56px] h-[56px] max-w-[56px] lg:w-20 lg:h-20 lg:max-w-[80px] rounded-full flex-shrink-0 object-cover transition-opacity duration-300 #{headshot_opacity}", 
+                    alt: driver.name,
+                    data: { sortable_target: "headshot" } %>
+              <% end %>
+              <div class="flex flex-col items-center text-center">
+                <span class="driver-name text-xs md:text-sm lg:text-lg xl:text-xl font-medium transition-opacity duration-300 <%= driver_name_opacity %>" data-sortable-target="driverName"><%= driver.name %></span>
+                <span class="team-name text-gray-400 text-xs md:text-sm lg:text-base xl:text-lg mt-0.5 transition-opacity duration-300 <%= driver_name_opacity %>" data-sortable-target="teamName"><%= driver.team %></span>
+              </div>
             </div>
-          </td>
+          </div>
 
-          <td class="py-2 text-gray-400">
-            <%= driver.team %>
-          </td>
-
-          <td class="py-2 text-right text-gray-400 flex items-center justify-end gap-2">
-            <span data-sortable-target="positionDisplay">
-              <%= index + 1 %>
-            </span>
+          <div class="py-4 text-center w-16 flex-shrink-0">
+            <div class="relative flex items-center justify-center">
+              <span class="text-3xl font-black italic tracking-tighter tabular-nums position-highlight
+                 <%= case index + 1
+                     when 1 then 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]' # Gold P1
+                     when 2 then 'text-gray-300'    # Silver P2
+                     when 3 then 'text-orange-400'  # Bronze P3
+                     when 4..10 then 'text-white'   # Top 10 (P4-P10)
+                     else 'text-gray-600'           # The Rest
+                     end %>" 
+                 data-sortable-target="positionDisplay"
+                 data-position="<%= index + 1 %>">
+                <span class="text-sm opacity-50 not-italic mr-0.5">P</span><span class="position-number"><%= index + 1 %></span>
+              </span>
+            </div>
+          </div>
+              </div>
+            </div>
           </td>
         </tr>
       <% end %>
-    </tbody>
-    </table>
+      </tbody>
+      </table>
+    </div>
 
-    <div class="mt-8 flex justify-end gap-4 items-center">
+    <div class="mt-6 md:mt-8 flex flex-col sm:flex-row justify-end gap-3 md:gap-4 items-stretch sm:items-center">
       <% if bet.submitted? %>
-        <div class="bg-green-900/50 text-green-200 px-4 py-2 rounded border border-green-700">
+        <div class="bg-green-900/50 text-green-200 px-3 py-2 md:px-4 text-sm md:text-base rounded border border-green-700">
           ✅ Aposta Confirmada
         </div>
 
       <% else %>
         <% show_success = local_assigns[:show_success] || false %>
-        <div id="save-success-message" class="<%= show_success ? '' : 'hidden' %> bg-green-900/50 text-green-200 px-4 py-2 rounded border border-green-700 transition-opacity duration-500">
+        <div id="save-success-message" class="<%= show_success ? '' : 'hidden' %> bg-green-900/50 text-green-200 px-3 py-2 md:px-4 text-sm md:text-base rounded border border-green-700 transition-opacity duration-500">
           ✓ Salvo com sucesso
         </div>
         <% if show_success %>
@@ -91,8 +121,8 @@
               if (msg) {
                 setTimeout(function() {
                   msg.style.opacity = '0';
-                  setTimeout(function() { 
-                    if (msg) msg.classList.add('hidden'); 
+                  setTimeout(function() {
+                    if (msg) msg.classList.add('hidden');
                   }, 500);
                 }, 3000);
               }
@@ -101,11 +131,11 @@
         <% end %>
 
         <%= f.submit "Salvar Rascunho",
-            class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded cursor-pointer border border-gray-600",
+            class: "px-3 py-2 md:px-4 text-sm md:text-base bg-gray-700 hover:bg-gray-600 text-gray-200 rounded cursor-pointer border border-gray-600",
             data: { action: "click->sortable#updateForm" } %>
 
         <%= f.submit "Confirmar Aposta",
-            class: "px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded cursor-pointer",
+            class: "px-3 py-2 md:px-4 text-sm md:text-base bg-orange-600 hover:bg-orange-500 text-white font-bold rounded cursor-pointer",
             data: {
                 action: "click->sortable#updateForm",
                 confirm: "Tem certeza? Após confirmar, você não poderá alterar sua aposta."

@@ -105,8 +105,8 @@
 
     <div class="mt-6 md:mt-8 flex flex-col sm:flex-row justify-end gap-3 md:gap-4 items-stretch sm:items-center">
       <% if bet.submitted? %>
-        <div class="bg-green-900/50 text-green-200 px-3 py-2 md:px-4 text-sm md:text-base rounded border border-green-700">
-          ✅ Aposta Confirmada
+        <div class="h-12 px-6 rounded-full bg-[#FF8700] text-black flex items-center justify-center gap-3 font-bold shadow-[0_0_20px_rgba(255,135,0,0.4)]">
+          Aposta Confirmada
         </div>
 
       <% else %>
@@ -131,11 +131,11 @@
         <% end %>
 
         <%= f.submit "Salvar Rascunho",
-            class: "px-3 py-2 md:px-4 text-sm md:text-base bg-gray-700 hover:bg-gray-600 text-gray-200 rounded cursor-pointer border border-gray-600",
+            class: "h-12 px-6 rounded-full bg-[#4b5563] hover:bg-[#6b7280] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(107,114,128,0.4)] cursor-pointer",
             data: { action: "click->sortable#updateForm" } %>
 
         <%= f.submit "Confirmar Aposta",
-            class: "px-3 py-2 md:px-4 text-sm md:text-base bg-orange-600 hover:bg-orange-500 text-white font-bold rounded cursor-pointer",
+            class: "h-12 px-6 rounded-full bg-[#16a34a] hover:bg-[#22c55e] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(22,163,74,0.4)] cursor-pointer",
             data: {
                 action: "click->sortable#updateForm",
                 confirm: "Tem certeza? Após confirmar, você não poderá alterar sua aposta."

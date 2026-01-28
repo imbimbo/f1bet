@@ -71,26 +71,22 @@ def create
       end
     end
     
-    if params[:commit] == "Salvar Rascunho"
-      # Get ordered drivers directly from the database to ensure correct order
-      ordered_drivers = if @bet.bet_positions.any?
-                          @bet.bet_positions
-                                .includes(:driver)
-                                .order(:position)
-                                .map(&:driver)
-                        else
-                          Driver.all.order(:name)
-                        end
-      
-      # O usuário está salvando um rascunho, renderize a grade atualizada
-      render turbo_stream: turbo_stream.replace(
-        "drivers-grid",
-        partial: "bets/grid",
-        locals: { drivers: ordered_drivers, bet: @bet, race: @bet.race, show_success: true }
-      )
-    else
-      redirect_to @bet, notice: "Bet placed!"
-    end
+    # Get ordered drivers directly from the database to ensure correct order
+    ordered_drivers = if @bet.bet_positions.any?
+                        @bet.bet_positions
+                              .includes(:driver)
+                              .order(:position)
+                              .map(&:driver)
+                      else
+                        Driver.all.order(:name)
+                      end
+    
+    # Both draft and submission stay on the same page with updated grid
+    render turbo_stream: turbo_stream.replace(
+      "drivers-grid",
+      partial: "bets/grid",
+      locals: { drivers: ordered_drivers, bet: @bet, race: @bet.race, show_success: is_submitting }
+    )
   else
     # ERROR: se a validação falhar, renderize o formulário novamente com erros
     render :new
@@ -184,17 +180,12 @@ def handle_save
                           Driver.all.order(:name)
                         end
     
-    if is_submitting
-      # CASE 1: Confirmar Aposta -> Ir pro show da aposta
-      redirect_to @bet, notice: "Aposta realizada com sucesso!"
-    else
-      # CASE 2: Draft -> ficar na mesma página com a grade atualizada
-      render turbo_stream: turbo_stream.replace(
-        "drivers-grid",
-        partial: "bets/grid",
-        locals: { drivers: ordered_drivers, bet: @bet, race: @bet.race, show_success: true }
-      )
-    end
+    # Both draft and submission stay on the same page with updated grid
+    render turbo_stream: turbo_stream.replace(
+      "drivers-grid",
+      partial: "bets/grid",
+      locals: { drivers: ordered_drivers, bet: @bet, race: @bet.race, show_success: is_submitting }
+    )
   else
     # If save failed, log errors for debugging
     Rails.logger.error "Bet save failed: #{@bet.errors.full_messages.join(', ')}"

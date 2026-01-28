@@ -3,7 +3,11 @@ class BetPositionsController < ApplicationController
 
   # GET /bet_positions or /bet_positions.json
   def index
-    @bet_positions = BetPosition.all
+    # Get all submitted bets for the current user with their positions
+    @bets = current_user.bets
+                        .where(submitted: true)
+                        .includes(:race, bet_positions: :driver)
+                        .order(created_at: :desc)
   end
 
   # GET /bet_positions/1 or /bet_positions/1.json

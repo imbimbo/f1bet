@@ -2,7 +2,13 @@
 <% race ||= bet&.race %>
 <%# Use passed bet or find/create one %>
 <% bet ||= current_user.bets.find_by(race: race) || Bet.new(submitted: false, race: race, user: current_user) %>
-<div id="drivers-grid" class="w-full">
+<% error_message = local_assigns[:error] %>
+<%= turbo_frame_tag "drivers-grid", class: "w-full" do %>
+  <% if error_message.present? %>
+    <div class="mb-4 p-4 bg-red-900/50 text-red-200 rounded-lg border border-red-700">
+      <%= error_message %>
+    </div>
+  <% end %>
   <%= form_with model: bet,
     data: { controller: "sortable", action: "submit->sortable#updateForm" } do |f| %>
     <%= f.hidden_field :race_id, value: race.id %>
@@ -105,8 +111,16 @@
 
     <div class="mt-6 md:mt-8 flex flex-col sm:flex-row justify-end gap-3 md:gap-4 items-stretch sm:items-center">
       <% if bet.submitted? %>
-        <div class="h-12 px-6 rounded-full bg-[#FF8700] text-black flex items-center justify-center gap-3 font-bold shadow-[0_0_20px_rgba(255,135,0,0.4)]">
-          Aposta Confirmada
+        <div class="flex flex-col sm:flex-row items-center gap-3 md:gap-4">
+          <div class="h-12 px-6 rounded-full bg-[#FF8700] text-black flex items-center justify-center gap-3 font-bold shadow-[0_0_20px_rgba(255,135,0,0.4)]">
+            ✅ Aposta Confirmada
+          </div>
+          <% unless bet.locked? %>
+            <%= button_to "Atualizar Aposta", reopen_bet_path(bet),
+                method: :patch,
+                class: "h-12 px-6 rounded-full bg-[#4b5563] hover:bg-[#6b7280] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(107,114,128,0.4)] cursor-pointer",
+                form: { data: { turbo_frame: "drivers-grid" } } %>
+          <% end %>
         </div>
 
       <% else %>
@@ -145,3 +159,4 @@
 
       <% end %>
   </div>
+<% end %>

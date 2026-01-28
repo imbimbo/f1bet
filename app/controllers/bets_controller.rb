@@ -1,5 +1,5 @@
 class BetsController < ApplicationController
-  before_action :set_bet, only: %i[ show edit update destroy ]
+  before_action :set_bet, only: %i[ show edit update destroy reopen ]
   before_action :authenticate_user!
 
   # GET /bets or /bets.json
@@ -99,6 +99,25 @@ end
     # Assign attributes except bet_positions_attributes (we'll handle those manually)
     @bet.assign_attributes(bet_params.except(:bet_positions_attributes))
     handle_save
+  end
+
+  # PATCH /bets/1/reopen
+  def reopen
+    error_message = nil
+
+    if @bet.locked?
+      error_message = "A aposta está bloqueada. Não é possível atualizar menos de 5 minutos antes da corrida."
+    else
+      @bet.submitted = false
+      error_message = @bet.errors.full_messages.join(", ") unless @bet.save
+    end
+
+    ordered_drivers = @bet.ordered_drivers
+
+    # When called from a Turbo Frame, this HTML response (containing the
+    # drivers-grid frame) will replace only that frame in the page.
+    render partial: "bets/grid",
+           locals: { drivers: ordered_drivers, bet: @bet, race: @bet.race, error: error_message }
   end
 
   # DELETE /bets/1 or /bets/1.json

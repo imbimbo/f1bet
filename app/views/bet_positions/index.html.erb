@@ -1,29 +1,78 @@
-<% content_for :title, "Bet positions" %>
+<% content_for :title, "Minhas Apostas" %>
 
 <div class="w-full">
   <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Bet positions</h1>
-    <%= link_to "New bet position", new_bet_position_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
-  </div>
+  <h1 class="text-4xl md:text-5xl font-black italic text-white uppercase mb-8">Minhas Apostas</h1>
 
-  <div id="bet_positions" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @bet_positions.any? %>
-      <% @bet_positions.each do |bet_position| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-          <%= render bet_position %>
-          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-            <%= link_to "Show", bet_position, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= link_to "Edit", edit_bet_position_path(bet_position), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= button_to "Destroy", bet_position, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+  <div id="bet_positions" class="space-y-8">
+    <% if @bets.any? %>
+      <% @bets.each do |bet| %>
+        <div 
+          class="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5"
+          data-controller="accordion">
+          <div class="relative w-full bg-[#0a0a0a] rounded-3xl overflow-hidden">
+            <!-- Bet Header with Toggle Button -->
+            <button
+              type="button"
+              data-action="click->accordion#toggle"
+              data-accordion-target="button"
+              class="w-full flex justify-between items-center px-6 md:px-8 py-6 md:py-8 bg-[#0a0a0a] transition-all duration-200 hover:bg-[#FF8700]">
+              <div class="flex-1 flex items-center justify-between gap-4 min-w-0">
+                <div class="flex-1 min-w-0">
+                  <h2 class="text-2xl md:text-3xl font-black italic text-white uppercase mb-2" data-accordion-target="text">
+                    <%= country_name_pt_br(bet.race) %>
+                  </h2>
+                  <p class="text-gray-400 text-sm md:text-base">
+                    <%= bet.race.official_name.presence || circuit_name(bet.race) %>
+                  </p>
+                  <% if bet.race.date.present? %>
+                    <p class="text-gray-500 text-xs md:text-sm mt-1">
+                      <%= format_date_pt_br(bet.race.date) %>
+                    </p>
+                  <% end %>
+                </div>
+                <div class="text-right flex-shrink-0 ml-4">
+                  <div class="text-sm text-gray-400 mb-1">Pontos</div>
+                  <div class="text-2xl md:text-3xl font-bold text-white">
+                    <%= bet.points || 0 %>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">
+                    Apostado em <%= bet.created_at.strftime("%d/%m/%Y às %H:%M") %>
+                  </div>
+                </div>
+              </div>
+              <svg 
+                class="w-5 h-5 md:w-6 md:h-6 text-white transition-all duration-200 ml-4 flex-shrink-0" 
+                data-accordion-target="icon" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+
+            <!-- Bet Positions Grid (Collapsible) -->
+            <div 
+              data-accordion-target="content"
+              class="hidden bg-[#0a0a0a] px-6 md:px-8 pb-6 md:pb-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <% bet.bet_positions.order(:position).each do |bet_position| %>
+                  <%= render bet_position, bet: bet %>
+                <% end %>
+              </div>
+            </div>
           </div>
         </div>
       <% end %>
     <% else %>
-      <p class="text-center my-10">No bet positions found.</p>
+      <div class="text-center py-16">
+        <p class="text-gray-400 text-lg">Nenhuma aposta confirmada ainda.</p>
+        <p class="text-gray-500 text-sm mt-2">Confirme suas apostas nas páginas das corridas.</p>
+      </div>
     <% end %>
   </div>
 </div>

@@ -1,4 +1,6 @@
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min lg:auto-rows-fr">
+<h1 class="text-4xl md:text-5xl font-black italic text-white uppercase mt-8 mb-4">Bem vindo, <span class="text-[#FF8700]"><%= current_user.name %></span>!</h1>
+<div class="flex items-center justify-center">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min lg:auto-rows-fr w-full max-w-7xl">
   <!-- Upcoming Race Card - Large, spans 2 columns and 2 rows -->
   <div class="md:col-span-2 lg:col-span-2 lg:row-span-2 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500">
 
@@ -158,5 +160,5 @@
 
     <% end %>
   </div>
-
+  </div>
 </div>

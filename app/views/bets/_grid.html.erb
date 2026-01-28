@@ -2,7 +2,13 @@
 <% race ||= bet&.race %>
 <%# Use passed bet or find/create one %>
 <% bet ||= current_user.bets.find_by(race: race) || Bet.new(submitted: false, race: race, user: current_user) %>
-<div id="drivers-grid" class="w-full">
+<% error_message = local_assigns[:error] %>
+<%= turbo_frame_tag "drivers-grid", class: "w-full" do %>
+  <% if error_message.present? %>
+    <div class="mb-4 p-4 bg-red-900/50 text-red-200 rounded-lg border border-red-700">
+      <%= error_message %>
+    </div>
+  <% end %>
   <%= form_with model: bet,
     data: { controller: "sortable", action: "submit->sortable#updateForm" } do |f| %>
     <%= f.hidden_field :race_id, value: race.id %>
@@ -61,13 +67,13 @@
               <% headshot_opacity = index + 1 > 10 ? 'opacity-40' : 'opacity-100' %>
               <% driver_name_opacity = index + 1 > 10 ? 'opacity-40' : 'opacity-100' %>
               <% if driver.headshot_url.present? %>
-                <img src="<%= driver.headshot_url %>" 
-                     class="driver-headshot w-18 h-18 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full flex-shrink-0 object-cover transition-opacity duration-300 <%= headshot_opacity %>" 
+                <img src="<%= driver.headshot_url %>"
+                     class="driver-headshot w-20 h-20 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full flex-shrink-0 object-cover transition-opacity duration-300 <%= headshot_opacity %>"
                      alt="<%= driver.name %>"
                      data-sortable-target="headshot">
               <% else %>
-                <%= image_tag 'avatar.png', 
-                    class: "driver-headshot w-[56px] h-[56px] max-w-[56px] lg:w-20 lg:h-20 lg:max-w-[80px] rounded-full flex-shrink-0 object-cover transition-opacity duration-300 #{headshot_opacity}", 
+                <%= image_tag 'avatar.png',
+                    class: "driver-headshot w-[56px] h-[56px] max-w-[56px] lg:w-20 lg:h-20 lg:max-w-[80px] rounded-full flex-shrink-0 object-cover transition-opacity duration-300 #{headshot_opacity}",
                     alt: driver.name,
                     data: { sortable_target: "headshot" } %>
               <% end %>
@@ -87,7 +93,7 @@
                      when 3 then 'text-orange-400'  # Bronze P3
                      when 4..10 then 'text-white'   # Top 10 (P4-P10)
                      else 'text-gray-600'           # The Rest
-                     end %>" 
+                     end %>"
                  data-sortable-target="positionDisplay"
                  data-position="<%= index + 1 %>">
                 <span class="text-sm opacity-50 not-italic mr-0.5">P</span><span class="position-number"><%= index + 1 %></span>
@@ -105,8 +111,16 @@
 
     <div class="mt-6 md:mt-8 flex flex-col sm:flex-row justify-end gap-3 md:gap-4 items-stretch sm:items-center">
       <% if bet.submitted? %>
-        <div class="bg-green-900/50 text-green-200 px-3 py-2 md:px-4 text-sm md:text-base rounded border border-green-700">
-          ✅ Aposta Confirmada
+        <div class="flex flex-col sm:flex-row items-center gap-3 md:gap-4">
+          <div class="h-12 px-6 rounded-full bg-[#FF8700] text-black flex items-center justify-center gap-3 font-bold shadow-[0_0_20px_rgba(255,135,0,0.4)]">
+            ✅ Aposta Confirmada
+          </div>
+          <% unless bet.locked? %>
+            <%= button_to "Atualizar Aposta", reopen_bet_path(bet),
+                method: :patch,
+                class: "h-12 px-6 rounded-full bg-[#4b5563] hover:bg-[#6b7280] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(107,114,128,0.4)] cursor-pointer",
+                form: { data: { turbo_frame: "drivers-grid" } } %>
+          <% end %>
         </div>
 
       <% else %>
@@ -131,11 +145,11 @@
         <% end %>
 
         <%= f.submit "Salvar Rascunho",
-            class: "px-3 py-2 md:px-4 text-sm md:text-base bg-gray-700 hover:bg-gray-600 text-gray-200 rounded cursor-pointer border border-gray-600",
+            class: "h-12 px-6 rounded-full bg-[#4b5563] hover:bg-[#6b7280] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(107,114,128,0.4)] cursor-pointer",
             data: { action: "click->sortable#updateForm" } %>
 
         <%= f.submit "Confirmar Aposta",
-            class: "px-3 py-2 md:px-4 text-sm md:text-base bg-orange-600 hover:bg-orange-500 text-white font-bold rounded cursor-pointer",
+            class: "h-12 px-6 rounded-full bg-[#16a34a] hover:bg-[#22c55e] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(22,163,74,0.4)] cursor-pointer",
             data: {
                 action: "click->sortable#updateForm",
                 confirm: "Tem certeza? Após confirmar, você não poderá alterar sua aposta."
@@ -145,3 +159,4 @@
 
       <% end %>
   </div>
+<% end %>

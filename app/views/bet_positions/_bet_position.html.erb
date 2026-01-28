@@ -1,14 +1,46 @@
-<div id="<%= dom_id bet_position %>" class="w-full sm:w-auto my-5 space-y-5">
-  <div>
-    <strong class="block font-medium mb-1">Bet:</strong>
-    <%= bet_position.bet_id %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Driver:</strong>
-    <%= bet_position.driver_id %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Position:</strong>
-    <%= bet_position.position %>
+<div id="<%= dom_id bet_position %>" class="relative rounded-lg p-[1px] bg-gradient-to-br from-white/5 to-white/2">
+  <div class="bg-[#1a1a1a] rounded-lg p-4 flex flex-col items-center text-center">
+    <!-- Position Badge -->
+    <div class="mb-3">
+      <span class="text-3xl font-black italic tracking-tighter tabular-nums
+        <%= case bet_position.position
+            when 1 then 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]'
+            when 2 then 'text-gray-300'
+            when 3 then 'text-orange-400'
+            when 4..10 then 'text-white'
+            else 'text-gray-600'
+            end %>">
+        <span class="text-sm opacity-50 not-italic mr-0.5">P</span><%= bet_position.position %>
+      </span>
+    </div>
+
+    <!-- Driver Headshot -->
+    <% if bet_position.driver.headshot_url.present? %>
+      <div class="mb-3">
+        <%= image_tag bet_position.driver.headshot_url,
+          class: "w-16 h-16 md:w-20 md:h-20 rounded-full object-cover mx-auto",
+          alt: bet_position.driver.name %>
+      </div>
+    <% else %>
+      <div class="mb-3">
+        <%= image_tag 'avatar.png',
+          class: "w-16 h-16 md:w-20 md:h-20 rounded-full object-cover mx-auto",
+          alt: bet_position.driver.name %>
+      </div>
+    <% end %>
+
+    <!-- Driver Name -->
+    <div class="mb-1">
+      <div class="text-white font-bold text-sm md:text-base">
+        <%= bet_position.driver.name.upcase %>
+      </div>
+    </div>
+
+    <!-- Driver Team -->
+    <% if bet_position.driver.team.present? %>
+      <div class="text-gray-400 text-xs">
+        <%= bet_position.driver.team %>
+      </div>
+    <% end %>
   </div>
 </div>

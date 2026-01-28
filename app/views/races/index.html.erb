@@ -1,3 +1,4 @@
+  <h1 class="text-4xl md:text-5xl font-black italic text-white uppercase py-8 mb-8">Calendário de Corridas</h1>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
   <% @races.each do |race| %>
     <%= link_to race_path(race), class: "block group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5 hover:from-blue-500 hover:to-cyan-400 transition-all duration-500" do %>

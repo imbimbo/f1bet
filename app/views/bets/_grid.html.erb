@@ -61,13 +61,13 @@
               <% headshot_opacity = index + 1 > 10 ? 'opacity-40' : 'opacity-100' %>
               <% driver_name_opacity = index + 1 > 10 ? 'opacity-40' : 'opacity-100' %>
               <% if driver.headshot_url.present? %>
-                <img src="<%= driver.headshot_url %>" 
-                     class="driver-headshot w-18 h-18 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full flex-shrink-0 object-cover transition-opacity duration-300 <%= headshot_opacity %>" 
+                <img src="<%= driver.headshot_url %>"
+                     class="driver-headshot w-20 h-20 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full flex-shrink-0 object-cover transition-opacity duration-300 <%= headshot_opacity %>"
                      alt="<%= driver.name %>"
                      data-sortable-target="headshot">
               <% else %>
-                <%= image_tag 'avatar.png', 
-                    class: "driver-headshot w-[56px] h-[56px] max-w-[56px] lg:w-20 lg:h-20 lg:max-w-[80px] rounded-full flex-shrink-0 object-cover transition-opacity duration-300 #{headshot_opacity}", 
+                <%= image_tag 'avatar.png',
+                    class: "driver-headshot w-[56px] h-[56px] max-w-[56px] lg:w-20 lg:h-20 lg:max-w-[80px] rounded-full flex-shrink-0 object-cover transition-opacity duration-300 #{headshot_opacity}",
                     alt: driver.name,
                     data: { sortable_target: "headshot" } %>
               <% end %>
@@ -87,7 +87,7 @@
                      when 3 then 'text-orange-400'  # Bronze P3
                      when 4..10 then 'text-white'   # Top 10 (P4-P10)
                      else 'text-gray-600'           # The Rest
-                     end %>" 
+                     end %>"
                  data-sortable-target="positionDisplay"
                  data-position="<%= index + 1 %>">
                 <span class="text-sm opacity-50 not-italic mr-0.5">P</span><span class="position-number"><%= index + 1 %></span>

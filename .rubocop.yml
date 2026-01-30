@@ -1,0 +1,11 @@
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: disable
+  Exclude:
+    - "db/schema.rb"
+    - "bin/**/*"
+    - "node_modules/**/*"
+  SuggestExtensions: false
+  require:
+  - rubocop-rails
+

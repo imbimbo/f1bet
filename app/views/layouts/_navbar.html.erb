@@ -19,10 +19,8 @@
         <!-- Right: Navigation Links -->
         <nav class="flex gap-6 items-center">
           <%= link_to "Calendário", races_path, class: "text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" %>
-          <button class="relative text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" title="Paddock Radio">
-            Chat
-            <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
+          <%= link_to "Chat", chat_path(Chat.first_or_create!), class: "text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" %>
+
           <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "text-lg hover:text-f1-yellow transition whitespace-nowrap px-3" %>
         </nav>
       </div>

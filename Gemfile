@@ -54,6 +54,14 @@ gem 'faker'
 #For API errors handling
 gem 'faraday'
 
+#For ActionCable - Chat
+gem 'solid_cable'
+
+group :development do
+  gem "rubocop", "~> 1.60"
+  gem "rubocop-rails"
+end
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]

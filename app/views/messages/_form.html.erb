@@ -1,0 +1,33 @@
+<%= form_with model: [chat, Message.new],
+                data: {
+                controller: "message-form",
+                action: "turbo:submit-end->message-form#reset" } do |f| %>
+
+  <%= hidden_field_tag :editing_message_id, nil, id: "editing_message_id" %>
+
+  <div class="flex gap-2 mt-4 items-end">
+
+    <%= f.text_area :content,
+      rows: 1,
+      class: "flex-1 resize-none overflow-hidden rounded-xl p-3 bg-black text-white",
+      data: {
+        controller: "autosize",
+        message_form_target: "textarea",
+        action: "keydown->message-form#keydown input->autosize#resize"
+      }
+    %>
+
+    <%= f.file_field :file, class: "hidden", id: "file-input" %>
+
+    <div class="flex gap-2 pb-1">
+      <label for="file-input"
+        class="cursor-pointer text-gray-400 hover:text-white text-lg">
+        📎
+      </label>
+
+      <%= f.submit "➤",
+        class: "text-blue-500 text-xl hover:text-blue-400" %>
+    </div>
+
+  </div>
+<% end %>

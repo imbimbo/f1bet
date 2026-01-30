@@ -1,0 +1,8 @@
+<!-- app/views/messages/messages.html.erb -->
+<div id="messages" class="flex flex-col gap-2 overflow-y-auto">
+  <% @messages.each do |message| %>
+    <%= render "messages/message",
+          message: message,
+          current_user: current_user %>
+  <% end %>
+</div>

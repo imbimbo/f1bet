@@ -2,6 +2,7 @@ pt-BR:
   time:
     formats:
       long: "%d/%m/%Y • %H:%M"
+      short: "%H:%M"
   date:
     formats:
       default: "%d/%m/%Y"

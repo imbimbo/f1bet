@@ -15,4 +15,9 @@ Rails.application.routes.draw do
   get "up", to: "rails/health#show", as: :rails_health_check
 
   root "home#index"
+
+  resources :chats, only: [:show] do
+    resources :messages, only: [:create, :update, :destroy]
+end
+
 end

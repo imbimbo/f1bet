@@ -1,10 +1,59 @@
-<% content_for :title, "Editing bet" %>
+<% content_for :title, "Editar Minha Aposta" %>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing bet</h1>
+<div class="w-full">
+  <h1 class="text-4xl md:text-5xl font-black italic text-white uppercase mb-8">Editar Minha Aposta</h1>
 
-  <%= render "form", bet: @bet %>
+  <!-- Race Information Card -->
+  <div class="mb-8 group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-white/5">
+    <div class="relative w-full bg-[#0a0a0a] rounded-3xl overflow-hidden px-6 md:px-8 py-6 md:py-8">
+      <!-- Country Name with Flag -->
+      <div class="flex items-center gap-4 mb-3 py-8">
+        <h2 class="text-4xl md:text-5xl font-black italic uppercase text-white">
+          <%= country_name_pt_br(@race) %>
+        </h2>
+        <% if @race.country_flag_url.present? %>
+          <div class="h-10 w-10 rounded-full overflow-hidden shadow-md object-cover">
+            <%= image_tag @race.country_flag_url,
+              class: "h-full w-full object-cover" %>
+          </div>
+        <% end %>
+      </div>
 
-  <%= link_to "Show this bet", @bet, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to bets", bets_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+      <!-- Official Name -->
+      <% if @race.official_name.present? %>
+        <p class="text-gray-400 font-normal text-2xl md:text-lg mb-2">
+          <%= @race.official_name %>
+        </p>
+      <% end %>
+
+      <!-- Location • Date -->
+      <p class="text-gray-400 font-normal text-lg md:text-lg mb-4">
+        <%= @race.location %>
+        •
+        <% if @race.date.present? %>
+          <%= format_date_pt_br(@race.date) %>
+        <% elsif @race.start_time.present? %>
+          <%= format_date_pt_br(@race.start_time.in_time_zone("America/Sao_Paulo").to_date) %>
+        <% end %>
+        <% if @race.start_time.present? %>
+          • <%= @race.start_time.in_time_zone("America/Sao_Paulo").strftime("%H:%M") %> (BRT)
+        <% end %>
+      </p>
+
+      <!-- Circuit Image -->
+      <% if @race.circuit_image_url.present? %>
+        <div class="mt-6 flex justify-center">
+          <%= image_tag @race.circuit_image_url,
+            alt: "Circuit layout",
+            class: "w-full max-w-3xl lg:max-w-3xl h-auto max-h-96 lg:max-h-80 object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Betting Grid -->
+  <%= render "bets/grid",
+      race: @race,
+      drivers: @drivers,
+      bet: @bet %>
 </div>

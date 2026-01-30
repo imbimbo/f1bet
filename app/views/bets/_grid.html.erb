@@ -1,7 +1,20 @@
 <%# Derive race from bet if not passed as local variable %>
 <% race ||= bet&.race %>
-<%# Use passed bet or find/create one %>
-<% bet ||= current_user.bets.find_by(race: race) || Bet.new(submitted: false, race: race, user: current_user) %>
+<%# Always fetch bet fresh from database to ensure correct submitted state (critical for page refreshes and navigation) %>
+<% if current_user && race %>
+  <%# Find bet for this race, always fetch fresh to get latest submitted state %>
+  <% found_bet = current_user.bets.find_by(race: race) %>
+  <% if found_bet %>
+    <%# Always fetch fresh from database to ensure submitted state is correct - this is critical! %>
+    <% bet = current_user.bets.find(found_bet.id) %>
+    <%# Double-check: reload to ensure we have absolute latest state %>
+    <% bet.reload %>
+  <% else %>
+    <% bet ||= Bet.new(submitted: false, race: race, user: current_user) %>
+  <% end %>
+<% else %>
+  <% bet ||= Bet.new(submitted: false, race: race, user: current_user) %>
+<% end %>
 <% error_message = local_assigns[:error] %>
 <%= turbo_frame_tag "drivers-grid", class: "w-full" do %>
   <% if error_message.present? %>
@@ -116,10 +129,10 @@
             ✅ Aposta Confirmada
           </div>
           <% unless bet.locked? %>
-            <%= button_to "Atualizar Aposta", reopen_bet_path(bet),
-                method: :patch,
-                class: "h-12 px-6 rounded-full bg-[#4b5563] hover:bg-[#6b7280] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(107,114,128,0.4)] cursor-pointer",
-                form: { data: { turbo_frame: "drivers-grid" } } %>
+          
+            <%= link_to "Atualizar Aposta", edit_bet_path(bet, reopen: true),
+               data: { turbo_frame: "_top" },
+               class: "h-12 px-6 rounded-full bg-[#4b5563] hover:bg-[#6b7280] text-white flex items-center justify-center gap-3 font-bold transition-transform hover:scale-110 shadow-[0_0_20px_rgba(107,114,128,0.4)] cursor-pointer" %>
           <% end %>
         </div>
 

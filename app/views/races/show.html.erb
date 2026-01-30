@@ -89,7 +89,18 @@
           data-accordion-target="content"
           class="hidden bg-[#0a0a0a] px-0 md:px-3 py-4">
 
-        <% bet ||= @bet || current_user.bets.find_by(race: race) || Bet.new(submitted: false) %>
+        <%# Always fetch bet fresh from database to ensure correct submitted state (critical for page refreshes and navigation) %>
+        <% if current_user %>
+          <% found_bet = current_user.bets.find_by(race: race) %>
+          <% if found_bet %>
+            <%# Always fetch fresh from database to ensure submitted state is correct %>
+            <% bet = current_user.bets.find(found_bet.id) %>
+          <% else %>
+            <% bet ||= Bet.new(submitted: false) %>
+          <% end %>
+        <% else %>
+          <% bet ||= Bet.new(submitted: false) %>
+        <% end %>
         <%# Ensure race is defined (derive from bet if missing) %>
         <% race ||= bet&.race %>
         <%= render "bets/grid",

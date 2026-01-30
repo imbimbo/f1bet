@@ -4,10 +4,12 @@ class BetPositionsController < ApplicationController
   # GET /bet_positions or /bet_positions.json
   def index
     # Get all submitted bets for the current user with their positions
+    # Use to_a to ensure we have an array and force eager loading
     @bets = current_user.bets
                         .where(submitted: true)
                         .includes(:race, bet_positions: :driver)
                         .order(created_at: :desc)
+                        .to_a
   end
 
   # GET /bet_positions/1 or /bet_positions/1.json
